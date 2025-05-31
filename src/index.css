@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --animate-fade-out: fadeOut 2s ease-in-out 1s;
+  --animate-fade-in: fadeIn 1s ease-in-out;
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+}
+
+
+@utility container {
+  max-width: 70dvw;
+  margin: 0 auto;
+}
+
+@utility container-md {
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+.active-navbar {
+  @apply text-emerald-500 font-medium;
+}
+
+.btn-close-preview {
+  @apply absolute bg-red-600 text-gray-50 px-2 rounded-full
+            text-xs py-1 -right-1 -top-1 hover:bg-red-500 cursor-pointer
+            transition-colors duration-300 font-medium;
+}
