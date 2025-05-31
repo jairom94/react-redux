@@ -10,6 +10,7 @@ import { PlusIcon } from "../icons/plus-icon";
 import { BurgerMenu } from "../icons/burger-icon";
 import DynamicIcon from "../icons/dynamic-icon";
 import { CloseIcon } from "../icons/close-icon";
+import AuthButtonDesktop from "../../pages/auth/auth-button-desktop";
 
 const Header = () => {
   const [tags, setTags] = useState<Tag[]>([]);
@@ -86,12 +87,7 @@ const Header = () => {
         </div>
         {/* Modo Desktop */}
       <div className="hidden md:flex md:gap-2">
-        <NavLink
-          className={`rounded-4xl border-2 border-emerald-500 px-6 py-2 font-medium transition-opacity duration-300 hover:opacity-70`}
-          to="/signup"
-        >
-          Regístrate o inicia sesión
-        </NavLink>
+        <AuthButtonDesktop />
         <NavLink
           className={`flex items-center gap-1 rounded-4xl border-2 border-emerald-500 bg-emerald-500 px-6 py-2 font-medium transition-opacity duration-300 hover:opacity-70`}
           to="/adverts/new"
@@ -151,7 +147,9 @@ const Header = () => {
           className="flex flex-col gap-4"
           >
             { tags.map(tag => (
-              <li className="border-b-1 border-gray-300 pb-3">
+              <li 
+              key={tag}
+              className="border-b-1 border-gray-300 pb-3">
                 <Link 
                 className="grid grid-cols-[40px_1fr] gap-2 hover:underline"
                 to="">
@@ -166,6 +164,7 @@ const Header = () => {
           <li>
             <NavLink 
             className={({isActive})=>(isActive ? 'border-b-2':'hover:border-b-2')}
+            end
             to="/adverts">
               Todas los anuncios
               </NavLink>

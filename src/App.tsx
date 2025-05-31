@@ -47,7 +47,7 @@ function App() {
         }
       />   
       <Route path="/not-found" element={<div>404 | Not Found</div>} />
-      <Route path="*" element={<Navigate to="/not-found" />} />  
+      <Route path="*" element={<Navigate to="/not-found" replace />} />  
     </Routes>
   );
 }
