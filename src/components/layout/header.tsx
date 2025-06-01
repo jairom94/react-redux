@@ -126,10 +126,10 @@ const Header = () => {
           `}>            
         </div>
         <div className={`
-        fixed top-[97px] md:top-[168px]
+        fixed top-[97px] md:top-[168px] 
           md:h-[calc(100vh-168px)]
           h-[calc(100vh-97px)] w-[300px] z-20
-          ${ showmenu ? '-translate-x-3 md:translate-x-[-40px]' : 'translate-x-[-300px] md:translate-x-[-340px]' }
+          ${ showmenu ? 'left-0' : 'left-[-300px]' }
           bg-white transition-all duration-300
           px-2
           `}>

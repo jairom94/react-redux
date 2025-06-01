@@ -1,9 +1,9 @@
-import {  
-    useEffect,
+import {
+  useEffect,
   useRef,
   useState,
   type ChangeEvent,
-  type FormEvent,  
+  type FormEvent,
 } from "react";
 import RadioItem from "../../components/ui/radio-item";
 import RadioGroup from "../../components/ui/radio-group";
@@ -16,7 +16,7 @@ import { createAdvert, getTags } from "./service";
 import PreviewImage from "./partials/preview-image";
 
 const NewAdvertPage = () => {
-  const initialValueAdvert:Advert = {
+  const initialValueAdvert: Advert = {
     name: "",
     type: "",
     price: 0,
@@ -28,16 +28,16 @@ const NewAdvertPage = () => {
   // const previewImage = useRef<HTMLPictureElement>(null);
 
   const { name, type, price, tags, photo } = advert;
-//   const Tags = ["work", "lifestyle", "mobile", "motor"];
-const [Tags,setTags] = useState<Tag[]>([])
-const [ranNum,setRanNum] = useState(Math.random)
+  //   const Tags = ["work", "lifestyle", "mobile", "motor"];
+  const [Tags, setTags] = useState<Tag[]>([]);
+  const [ranNum, setRanNum] = useState(Math.random);
   const isDisabled =
     !name || !type || Number(price) === 0 || tags.length === 0 || !photo;
-  useEffect(()=>{
+  useEffect(() => {
     getTags()
-    .then(tags_=>setTags(tags_))
-    .catch(err=>alert(err))
-  },[])
+      .then((tags_) => setTags(tags_))
+      .catch((err) => alert(err));
+  }, []);
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const newAdvert: Advert = {
       ...advert,
@@ -65,16 +65,16 @@ const [ranNum,setRanNum] = useState(Math.random)
       setAdvert((prevAdvert) => ({
         ...prevAdvert,
         photo: e.target.files![0],
-      }));      
+      }));
     }
   }
-  function handleClickRemovePhoto(){
+  function handleClickRemovePhoto() {
     setAdvert((prevAdvert) => ({
-        ...prevAdvert,
-        photo:'',
+      ...prevAdvert,
+      photo: "",
     }));
     if (photoFile.current) {
-      photoFile.current.value = ''
+      photoFile.current.value = "";
     }
   }
   function handleChangeCheckGroup() {
@@ -92,11 +92,11 @@ const [ranNum,setRanNum] = useState(Math.random)
           tags: [...newTags],
         }));
       },
-      clearSelects() {        
+      clearSelects() {
         setAdvert((prevAdvert) => ({
           ...prevAdvert,
           tags: [],
-        }));        
+        }));
       },
     };
   }
@@ -107,31 +107,34 @@ const [ranNum,setRanNum] = useState(Math.random)
       const advertFormData = new FormData();
       Object.entries(advert).forEach(([key, value]) => {
         if (key !== "type") {
-          advertFormData.append(key, value);
+          if (!value) return;
+          if (value instanceof File || value instanceof Blob) {
+            advertFormData.append(key, value);
+          }          
+          else if (Array.isArray(value)) {            
+            advertFormData.append(key, JSON.stringify(value));            
+          }else{          
+            advertFormData.append(key, String(value));
+          }
+            
         }
       });
       const resp = await createAdvert(advertFormData);
-      setAdvert(initialValueAdvert)
-      setRanNum(Math.random)
+      setAdvert(initialValueAdvert);
+      setRanNum(Math.random);
       console.log(resp);
     } catch (error) {
       console.log(error);
     }
-  } 
+  }
   // const cont = useRef(0)
   // cont.current+=1
-  //   console.log(cont.current);  
+  //   console.log(cont.current);
   return (
-    <div className={`
-    flex-1 flex flex-col justify-center items-center
-    max-w-[80dvw] my-0 mx-auto
-    md:max-w-[500px] md:my-0 md:mx-auto
-    `}>      
-      <form 
-      className={`
-         w-full flex flex-col gap-2                 
-        `}
-      onSubmit={handleSubmit}>
+    <div
+      className={`mx-auto my-0 flex max-w-[80dvw] flex-1 flex-col items-center justify-center pb-7 md:mx-auto md:my-0 md:max-w-[500px]`}
+    >
+      <form className={`flex w-full flex-col gap-2`} onSubmit={handleSubmit}>
         <FormField
           type="text"
           name="name"
@@ -140,7 +143,11 @@ const [ranNum,setRanNum] = useState(Math.random)
           id="name"
           label="Nombre"
         />
-        <RadioGroup newKey={ranNum} name="type" onChange={handleChangeRadioGroup}>
+        <RadioGroup
+          newKey={ranNum}
+          name="type"
+          onChange={handleChangeRadioGroup}
+        >
           <RadioItem label="Compra" value="buy" id="compra" />
           <RadioItem label="Venta" value="sale" id="venta" />
         </RadioGroup>
@@ -152,34 +159,39 @@ const [ranNum,setRanNum] = useState(Math.random)
           id="price"
           label="Precio"
         />
-        <CheckGroup newKey={ranNum} name="tags" value={tags} onChange={handleChangeCheckGroup}>
+        <CheckGroup
+          newKey={ranNum}
+          name="tags"
+          value={tags}
+          onChange={handleChangeCheckGroup}
+        >
           {Tags.map((tag) => (
             <CheckItem key={tag} label={tag} name={tag} id={tag} />
           ))}
         </CheckGroup>
         <div className="flex flex-col gap-2">
           <label
-          className={`
-            border border-dashed block
-            py-7 text-center cursor-pointer rounded-md
-            `}
+            className={`block cursor-pointer rounded-md border border-dashed py-7 text-center`}
           >
-            <span
-            className="text-sm"
-            >Arrastra tus imágenes aquí o haz clic para seleccionar</span>
+            <span className="text-sm">
+              Arrastra tus imágenes aquí o haz clic para seleccionar
+            </span>
             <input
               type="file"
               accept="image/*"
               name="file"
               ref={photoFile}
               onChange={handleChangeFile}
-              className="hidden "
+              className="hidden"
             />
           </label>
-          <div 
-          className="w-[150px] relative"
-          >            
-            { photo && <PreviewImage imageFile={photo as File} onClick={handleClickRemovePhoto} /> }
+          <div className="relative w-[150px]">
+            {photo && (
+              <PreviewImage
+                imageFile={photo as File}
+                onClick={handleClickRemovePhoto}
+              />
+            )}
           </div>
         </div>
         <ButtonCustom

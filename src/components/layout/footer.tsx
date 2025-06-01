@@ -4,6 +4,10 @@ import { MailIcon } from "../icons/mail-icon";
 import { PlusIcon } from "../icons/plus-icon";
 import { StoreIcon } from "../icons/store-icon";
 import AuthButton from "../../pages/auth/auth-button";
+import logoDesktop from "../../assets/header/logo-desktop.svg";
+import { FacebookIcon } from "../icons/facebook-icon";
+import { TwitterIcon } from "../icons/twitter-icon";
+import { InstagramIcon } from "../icons/instagram-icon";
 
 const Footer = () => {
   const newLocal = `
@@ -18,31 +22,102 @@ const Footer = () => {
               `;
   return (
     <div>
-      <footer className="class-name pb-[90px]">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
-        illum placeat at perspiciatis nulla, ratione impedit ex dolor officiis
-        neque cupiditate molestiae rerum error, porro dolore quasi quidem quam
-        harum? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum
-        molestias ipsam quas ab animi nesciunt ipsum, voluptatibus alias
-        cupiditate nulla magni placeat sit architecto pariatur laudantium,
-        maiores est non nostrum? In nulla praesentium ducimus repellat quos. Ea
-        nihil adipisci aliquam minus deleniti. Minima, qui nemo. Mollitia quod
-        ullam quam cum. Blanditiis corporis, animi inventore recusandae quas et
-        natus minima. Sequi? Et possimus quam cupiditate. Quasi, molestiae?
-        Maxime hic beatae sunt quia fugit, atque natus, dolor suscipit
-        distinctio quo ipsa placeat voluptatum possimus eius, asperiores in.
-        Beatae quia delectus pariatur veritatis? Deserunt qui maxime eaque in
-        dolores esse itaque perferendis blanditiis totam, laborum doloribus        
+      <footer className="px-7 md:px-0 pt-3 pb-[90px] md:pb-0 shadow-[0_2px_5px_rgb(0,0,0)]">
+        <div
+          className={`[&>section>h3]:text-md flex max-w-[50dvw] flex-col 
+            gap-5 [&>section>h3]:font-medium [&>section>h3]:tracking-wider 
+            [&>section>ul]:flex [&>section>ul]:flex-col [&>section>ul]:gap-3 
+            [&>section>ul>li]:text-xs [&>section>ul>li]:text-gray-500
+            md:max-w-none md:grid md:grid-cols-2 md:place-items-center md:pb-3`}
+        >
+          <section className="rights md:col-span-2">
+            <figure>
+              <img
+                className="object-contain"
+                src={logoDesktop}
+                alt="logo wallapop"
+              />
+            </figure>
+            <p className="text-xs text-gray-500">
+              © 2013-2025 Wallapop. Todos los derechos reservados
+            </p>
+          </section>
+          <section className="information nav">
+            <h3>Wallapop</h3>
+            <ul>
+              <li>
+                <a href="#">Quiénes somos</a>
+              </li>
+              <li>
+                <a href="#">Como funciona</a>
+              </li>
+              <li>
+                <a href="#">Brand Book</a>
+              </li>
+              <li>
+                <a href="#">Prensa</a>
+              </li>
+              <li>
+                <a href="#">Empleo</a>
+              </li>
+              <li>
+                <a href="#">Sostenibilidad</a>
+              </li>
+            </ul>
+          </section>
+          <section className="support nav">
+            <h3>Soporte</h3>
+            <ul>
+              <li>
+                <a href="#">Centro de ayuda</a>
+              </li>
+              <li>
+                <a href="#">Normas de la comunidad</a>
+              </li>
+              <li>
+                <a href="#">Consejos de seguridad</a>
+              </li>
+            </ul>
+          </section>
+        </div>
+        <nav>
+          <ul className={`
+            flex justify-center gap-4 [&>li]:text-gray-400
+            [&>li]:hover:text-emerald-500 [&>li]:transition-colors
+            [&>li]:duration-300 bg-emerald-200 py-3
+            `}>
+            <li>
+              <a href="#">
+                <div className="text-5xl">
+                  <FacebookIcon />
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <div className="text-5xl">
+                  <TwitterIcon />
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <div className="text-5xl">
+                  <InstagramIcon />
+                </div>
+              </a>
+            </li>
+          </ul>
+        </nav>
       </footer>
       <div className={`fixed right-0 bottom-0 left-0 bg-gray-50`}>
         <nav>
-          <ul
-            className={newLocal}
-          >
+          <ul className={newLocal}>
             <li>
-              <NavLink 
-              className={({isActive})=>(isActive ? 'active-navbar':'')}
-              to="/">
+              <NavLink
+                className={({ isActive }) => (isActive ? "active-navbar" : "")}
+                to="/"
+              >
                 <span>
                   <StoreIcon />
                 </span>
@@ -50,9 +125,10 @@ const Footer = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink 
-              className={({isActive})=>(isActive ? 'active-navbar':'')}
-              to="/favorites">
+              <NavLink
+                className={({ isActive }) => (isActive ? "active-navbar" : "")}
+                to="/favorites"
+              >
                 <span>
                   <HeartIcon />
                 </span>
@@ -60,9 +136,10 @@ const Footer = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink 
-              className={({isActive})=>(isActive ? 'active-navbar':'')}
-              to="/adverts/new">
+              <NavLink
+                className={({ isActive }) => (isActive ? "active-navbar" : "")}
+                to="/adverts/new"
+              >
                 <span>
                   <PlusIcon />
                 </span>
@@ -70,9 +147,10 @@ const Footer = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink 
-              className={({isActive})=>(isActive ? 'active-navbar':'')}
-              to="/messages">
+              <NavLink
+                className={({ isActive }) => (isActive ? "active-navbar" : "")}
+                to="/messages"
+              >
                 <span>
                   <MailIcon />
                 </span>
@@ -80,7 +158,7 @@ const Footer = () => {
               </NavLink>
             </li>
             <li>
-             <AuthButton />
+              <AuthButton />
             </li>
           </ul>
         </nav>
