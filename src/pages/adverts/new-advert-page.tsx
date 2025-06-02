@@ -111,8 +111,8 @@ const NewAdvertPage = () => {
           if (value instanceof File || value instanceof Blob) {
             advertFormData.append(key, value);
           }          
-          else if (Array.isArray(value)) {            
-            advertFormData.append(key, JSON.stringify(value));            
+          else if (Array.isArray(value)) {                       
+            advertFormData.append(key, value.join(','));            
           }else{          
             advertFormData.append(key, String(value));
           }

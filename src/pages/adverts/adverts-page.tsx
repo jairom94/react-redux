@@ -8,6 +8,12 @@ import manage from "../../utils/manage";
 import notFoundPlaceholder from "../../assets/not-found.jpg";
 // import { Link } from 'react-router';
 
+interface RadioType {
+  value:string;
+  state:boolean;
+}
+
+
 const AdvertsPage = () => {
   const [adverts, setAdverts] = useState<Advert[]>([]);
   const [tags, settags] = useState<Tag[]>([]);
@@ -16,8 +22,14 @@ const AdvertsPage = () => {
     type: "",
     tags: [],
   });
+  const [typesAdvert,setTypesAdverts] = useState<RadioType[]>([
+    {value:'compra',state:false},
+    {value:'venta',state:false},
+    {value:'todos',state:true}
+  ])
+
+
   const selectFilterRef = useRef<HTMLSelectElement>(null);
-  // const { name,tags } = filters;
   useEffect(() => {
     getAdverts()
       .then((data) => setAdverts(data))
@@ -25,7 +37,7 @@ const AdvertsPage = () => {
     getTags()
       .then((tags_) => settags(tags_))
       .catch((err) => alert(err));
-  }, []);
+  }, []);    
   const advertsFilters = useMemo(() => {
     return manage.filterAdverts(adverts, filters);
   }, [adverts, filters]);
@@ -41,6 +53,7 @@ const AdvertsPage = () => {
     }));
   }
   function handleChangeCategory(e: ChangeEvent<HTMLSelectElement>) {
+    if(!e.target.value)return
     setFilters((prevFilters) => ({
       ...prevFilters,
       tags: [...filters.tags, e.target.value],
@@ -50,25 +63,42 @@ const AdvertsPage = () => {
         el.setAttribute("disabled", "");
       }
     });
+    Array.from(e.target.children)[0].removeAttribute('selected')
   }
-  function handleCloseTagFilter(tag: string) {
+  function handleCloseTagFilter(tag: string) { 
+    const temp = [...filters.tags.filter((t) => t !== tag)]    
     setFilters((prevFilters) => ({
       ...prevFilters,
-      tags: [...prevFilters.tags.filter((t) => t !== tag)],
+      tags: temp,
     }));
     const selectFilter = selectFilterRef.current;
     if (!selectFilter) return;
     Array.from(selectFilter.children).forEach((el) => {
       if (el.textContent === tag) {
         el.removeAttribute("disabled");
-      }
+      }      
     });
+    if(temp.length === 0){
+        Array.from(selectFilter.children)[0].setAttribute('selected','');
+    }else {
+      Array.from(selectFilter.children)[0].removeAttribute('selected');
+    }
   }
   function handleChangeType(e: ChangeEvent<HTMLInputElement>) {
     setFilters((prevFilters) => ({
       ...prevFilters,
       type: e.target.value,
     }));
+    let temp = typesAdvert.map(ta => {
+      if (ta.value === e.target.value) {
+        return {...ta,state:true}
+      }
+      return {...ta, state:false}
+    })    
+    setTypesAdverts(temp)
+    temp = []
+    
+    
   }
   return (
     <div className="m-[0_auto] max-w-[90dvw] py-5 md:grid md:max-w-[100dvw] md:grid-cols-[minmax(350px,350px)_1fr]">
@@ -103,6 +133,7 @@ const AdvertsPage = () => {
               htmlFor="compra"
             >
               <input
+              checked={typesAdvert[0].state}
                 onChange={handleChangeType}
                 type="radio"
                 name="sale"
@@ -116,6 +147,7 @@ const AdvertsPage = () => {
               htmlFor="venta"
             >
               <input
+              checked={typesAdvert[1].state}
                 onChange={handleChangeType}
                 type="radio"
                 name="sale"
@@ -129,6 +161,7 @@ const AdvertsPage = () => {
               htmlFor="todos"
             >
               <input
+                checked={typesAdvert[2].state}
                 onChange={handleChangeType}
                 type="radio"
                 name="sale"
@@ -165,13 +198,13 @@ const AdvertsPage = () => {
             ))}
           </ul>
           <select
-            className="rounded-lg border border-emerald-500 px-3 py-1 font-medium text-emerald-800 focus:outline-emerald-700"
+            className="rounded-lg border border-emerald-500 px-3 py-1 font-medium text-emerald-800 focus:outline-emerald-700"            
             onChange={handleChangeCategory}
             ref={selectFilterRef}
             name="tags"
             id="category"
           >
-            <option value="" disabled>
+            <option value="">
               Seleccionar opcion
             </option>
             {tags.map((tag) => (

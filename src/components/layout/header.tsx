@@ -50,6 +50,7 @@ const Header = () => {
         md:gap-6 md:px-7 md:py-7`}
     >
       <div className="flex items-center md:gap-2">
+        <Link to={'/login'}>
         <figure className="flex items-center justify-center pt-1">
           <picture>
             <source media="(min-width:768px)" srcSet={logoDesktop} />
@@ -60,6 +61,7 @@ const Header = () => {
             />
           </picture>
         </figure>
+        </Link>
         <div className="relative flex flex-1 flex-col">
           <input
             type="text"
@@ -95,7 +97,7 @@ const Header = () => {
           <span>
             <PlusIcon />
           </span>
-          <span>Vender</span>
+          <span>Vender o comprar</span>
         </NavLink>
       </div>
       </div>
