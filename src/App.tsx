@@ -8,6 +8,7 @@ import AdvertsPage from "./pages/adverts/adverts-page";
 import NewAdvertPage from "./pages/adverts/new-advert-page";
 import AdvertPage from "./pages/adverts/advert-page";
 import RequireAuth from "./pages/auth/require-auth";
+import NotFoundPage from "./pages/404/not-found";
 // import LoginPage from "./pages/auth/login-page";
 //package json dev concurrently \"npm:dev:vite\" \"npm:lint:watch\" \"npm:format:watch\"
 
@@ -46,7 +47,7 @@ function App() {
           </Suspense>
         }
       />   
-      <Route path="/not-found" element={<div>404 | Not Found</div>} />
+      <Route path="/not-found" element={<NotFoundPage/>} />
       <Route path="*" element={<Navigate to="/not-found" replace />} />  
     </Routes>
   );
