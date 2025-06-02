@@ -14,6 +14,7 @@ import CheckItem from "../../components/ui/check-item";
 import ButtonCustom from "../../components/ui/button";
 import { createAdvert, getTags } from "./service";
 import PreviewImage from "./partials/preview-image";
+import { AxiosError } from "axios";
 
 const NewAdvertPage = () => {
   const initialValueAdvert: Advert = {
@@ -119,12 +120,15 @@ const NewAdvertPage = () => {
             
         }
       });
-      const resp = await createAdvert(advertFormData);
+      const resp = await createAdvert(advertFormData);      
       setAdvert(initialValueAdvert);
       setRanNum(Math.random);
-      console.log(resp);
+      alert(`Anuncio creado: ${resp.name}`)
+      // console.log(resp);
     } catch (error) {
-      console.log(error);
+      if(error instanceof AxiosError){
+        alert(`Error: ${error.message}`)
+      }
     }
   }
   // const cont = useRef(0)

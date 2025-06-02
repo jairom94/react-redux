@@ -6,6 +6,7 @@ import { getAdverts, getTags } from "./service";
 import { CloseIcon } from "../../components/icons/close-icon";
 import manage from "../../utils/manage";
 import notFoundPlaceholder from "../../assets/not-found.jpg";
+import { Link, useSearchParams } from "react-router";
 // import { Link } from 'react-router';
 
 interface RadioType {
@@ -27,17 +28,19 @@ const AdvertsPage = () => {
     {value:'venta',state:false},
     {value:'todos',state:true}
   ])
-
-
   const selectFilterRef = useRef<HTMLSelectElement>(null);
+
+  const [searchParams] = useSearchParams()
+  const searchByCategory = searchParams.get('category') ?? ''
+
   useEffect(() => {
-    getAdverts()
+    getAdverts(searchByCategory)
       .then((data) => setAdverts(data))
       .catch((err) => alert(err));
     getTags()
       .then((tags_) => settags(tags_))
       .catch((err) => alert(err));
-  }, []);    
+  }, [searchByCategory]);    
   const advertsFilters = useMemo(() => {
     return manage.filterAdverts(adverts, filters);
   }, [adverts, filters]);
@@ -100,8 +103,13 @@ const AdvertsPage = () => {
     
     
   }
+  console.log(adverts,advertsFilters);
+  
   return (
     <div className="m-[0_auto] max-w-[90dvw] py-5 md:grid md:max-w-[100dvw] md:grid-cols-[minmax(350px,350px)_1fr]">
+      <div className="tracking-wider col-span-2 p-7 flex [&>p>a]:text-emerald-600 [&>a]:cursor-pointer">
+        <p ><span>Ir a</span> <Link to={`/`}>Inicio</Link> / <Link to={`/adverts`}><span>Anuncios</span></Link></p> {searchByCategory && ( <p>&nbsp;/ <Link to={`/adverts?category=${searchByCategory}`}><span className="capitalize">{searchByCategory}</span></Link></p> )}
+      </div>
       {/* Filtrado */}
       <div className="flex flex-col gap-5 p-3 [&>div]:flex [&>div]:flex-col">
         <h3 className="font-sans text-2xl font-medium tracking-widest text-emerald-900">
@@ -172,7 +180,8 @@ const AdvertsPage = () => {
             </label>
           </div>
         </div>
-        <div className="flex gap-2">
+        { !searchByCategory && (
+          <div className="flex gap-2">
           <label
             className="text-lg font-medium tracking-wider text-emerald-700"
             htmlFor="category"
@@ -212,11 +221,12 @@ const AdvertsPage = () => {
             ))}
           </select>
         </div>
+        ) }
       </div>
       <ul
         className={`grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-[minmax(280px,_1fr)_minmax(280px,_1fr)_minmax(280px,_1fr)_minmax(280px,_1fr)] md:px-2`}
       >
-        {adverts.length > 0 && advertsFilters.length === 0 && (
+        {(adverts.length > 0 || adverts.length == 0) && advertsFilters.length === 0 && (
           <li>
             <figure className="relative">
               <img
@@ -226,7 +236,7 @@ const AdvertsPage = () => {
               />
             </figure>
             <p className="text-xl font-medium">
-              No se encontro los anuncions que busca.
+              No se encontró los anuncios que busca.
             </p>
           </li>
         )}

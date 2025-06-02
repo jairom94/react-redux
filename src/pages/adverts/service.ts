@@ -4,8 +4,9 @@ import type { Advert, Tag } from "./types";
 const URL_ADVERTS = "/api/v1/adverts";
 
 
-export const getAdverts = async () => {
-    const response = await client.get<Advert[]>(URL_ADVERTS);
+export const getAdverts = async (filterByTag:string) => {
+    const urlFilter = filterByTag ? `?tags=${filterByTag}` : ''
+    const response = await client.get<Advert[]>(`${URL_ADVERTS}${urlFilter}`);
     return response.data
 }
 

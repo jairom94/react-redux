@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 // import FormField from "../ui/form-field";
 import logoMobile from "../../assets/header/logo.svg";
 import logoDesktop from "../../assets/header/logo-desktop.svg";
 import { SearchIcon } from "../icons/search-icon";
 import type { Tag } from "../../pages/adverts/types";
 import { getTags } from "../../pages/adverts/service";
-import { Link, NavLink } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import { PlusIcon } from "../icons/plus-icon";
 import { BurgerMenu } from "../icons/burger-icon";
 import DynamicIcon from "../icons/dynamic-icon";
@@ -14,7 +14,9 @@ import AuthButtonDesktop from "../../pages/auth/auth-button-desktop";
 
 const Header = () => {
   const [tags, setTags] = useState<Tag[]>([]);
-  const [showmenu,setShowMenu] = useState(false)
+  const [showmenu,setShowMenu] = useState(false);
+  const [searchByCategory ,setSearchByCategory] = useState('');
+  const navigate = useNavigate()
   const tagsRef = useRef<HTMLDivElement>(null);
   const indexRef = useRef(1);
   // console.log(tags);
@@ -43,13 +45,23 @@ const Header = () => {
     }, 3000);
     return () => clearInterval(inter);
   }, [tags]);
+
+  function handleChangeSearch(e:ChangeEvent<HTMLInputElement>){
+    setSearchByCategory(e.target.value)
+  }
+  function handleSubmit(e:FormEvent<HTMLFormElement>){
+    e.preventDefault()
+    if (searchByCategory) {
+      navigate(`/adverts/?category=${searchByCategory}`,{ replace: true })
+    }
+  }
   return (
     <div
       className={`sticky top-0 left-0 z-50 flex flex-col 
         gap-2 bg-gray-50 
         md:gap-6 md:px-7 md:py-7`}
     >
-      <div className="flex items-center md:gap-2">
+      <div className="flex items-center md:gap-2 px-3 md:px-0">
         <Link to={'/login'}>
         <figure className="flex items-center justify-center pt-1">
           <picture>
@@ -62,31 +74,46 @@ const Header = () => {
           </picture>
         </figure>
         </Link>
-        <div className="relative flex flex-1 flex-col">
+        <form 
+        onSubmit={handleSubmit}
+        className="relative flex flex-1 flex-col">          
           <input
+            value={searchByCategory}
+            onChange={handleChangeSearch}
             type="text"
-            className={`peer rounded-4xl border border-gray-500 bg-white px-4 py-2 transition-all duration-300 ease-in-out hover:border-gray-900 hover:outline-1 hover:outline-gray-900`}
+            className={`peer rounded-4xl border border-gray-500
+              bg-white px-4 py-2 transition-all 
+              duration-300 ease-in-out hover:border-gray-900 
+              hover:outline-1 hover:outline-gray-900
+              
+              `}
             name="search"
             id="search"
             autoComplete="off"
           />
           <span
-            className={`pointer-events-none absolute top-[.5rem] left-4 text-2xl text-gray-300 peer-focus:hidden`}
+            className={`
+              ${searchByCategory ? 'hidden' : ''}
+              pointer-events-none absolute top-[.5rem] left-4 text-2xl text-gray-300 peer-focus:hidden`}
           >
             <SearchIcon />
           </span>
           <span
-            className={`pointer-events-none absolute top-[.5rem] left-[3rem] text-gray-500 peer-focus:hidden`}
+            className={`
+              ${searchByCategory ? 'hidden' : ''}
+              pointer-events-none absolute top-[.5rem] left-[3rem] text-gray-500 peer-focus:hidden`}
           >
             Busca
           </span>
           <div
             ref={tagsRef}
-            className={`pointer-events-none absolute top-[.5rem] left-[5.8rem] font-bold text-gray-700 peer-focus:hidden`}
+            className={`
+              ${searchByCategory ? 'hidden' : ''}
+              pointer-events-none absolute top-[.5rem] left-[5.8rem] font-bold text-gray-700 peer-focus:hidden`}
           >
             <span className="">{tags && tags[0]}</span>
           </div>
-        </div>
+        </form>
         {/* Modo Desktop */}
       <div className="hidden md:flex md:gap-2">
         <AuthButtonDesktop />
@@ -121,7 +148,9 @@ const Header = () => {
             </span>
           </label>
         </div>
-        <div className={`
+        <div 
+        onClick={()=>{setShowMenu(false)}}
+        className={`
           md:h-[calc(100vh-168px)] md:top-[168px]
           fixed -left-3 top-[97px] right-0 h-[calc(100vh-97px)] bg-black/80
           ${ showmenu ? '' : 'hidden' } z-10
@@ -152,9 +181,10 @@ const Header = () => {
               <li 
               key={tag}
               className="border-b-1 border-gray-300 pb-3">
-                <Link 
+                <Link
+                onClick={()=>{setShowMenu(false)}} 
                 className="grid grid-cols-[40px_1fr] gap-2 hover:underline"
-                to="">
+                to={`/adverts?category=${tag}`}>
                 <DynamicIcon icon={tag} className="flex justify-start items-center" />
                 <span className="capitalize">{tag}</span>
                 </Link>
@@ -168,7 +198,7 @@ const Header = () => {
             className={({isActive})=>(isActive ? 'border-b-2':'hover:border-b-2')}
             end
             to="/adverts">
-              Todas los anuncios
+              Anuncios Publicados
               </NavLink>
           </li>
         </ul>
