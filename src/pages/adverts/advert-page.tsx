@@ -27,7 +27,7 @@ const AdvertPage = () => {
             alt="Product Image"
           />
           <span
-            className={`absolute bottom-2 left-2 rounded-md px-2 font-medium tracking-wide text-gray-50 ${advert?.sale ? "bg-emerald-600" : "bg-orange-600"} `}
+            className={`leading-none absolute bottom-2 left-2 rounded-md px-3 py-2 font-medium tracking-wide text-gray-50 ${advert?.sale ? "bg-emerald-600" : "bg-orange-600"} `}
           >
             {advert?.sale ? "Venta" : "Compra"}
           </span>
@@ -40,7 +40,7 @@ const AdvertPage = () => {
           <ul className="flex gap-3 pt-2">
             {advert?.tags.map((tag) => (
               <li
-                className="text-md rounded-xl border-2 border-emerald-600 px-3"
+                className="leading-none py-1 text-md rounded-xl border-2 border-emerald-400 text-emerald-800 px-3"
                 key={tag}
               >
                 {tag}
