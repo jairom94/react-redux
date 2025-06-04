@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { detailAdvert } from "./service";
 import type { Advert } from "./types";
 import imagePlaceholder from '../../assets/placeholder_image.png';
@@ -16,6 +16,10 @@ const AdvertPage = () => {
   return (
     <div className="flex-1">
       <div className="m-[0_auto] max-w-[80dvw] py-8 grid grid-cols-1 md:grid-cols-3 md:gap-5">
+        <div className="md:col-span-3 md:py-0 tracking-wider py-7 flex [&>p>a]:text-emerald-600 [&>a]:cursor-pointer">
+          <p ><span>Ir a</span> <Link to={`/`}>Inicio</Link> / <Link to={`/adverts`}><span>Anuncios</span></Link> / <Link to={`/adverts/${advert?.id}`} className="capitalize">{advert?.name}</Link></p>
+        </div>
+        
         <figure className="relative md:col-span-2">
           <img
             className="aspect-video rounded-md object-cover object-center"
