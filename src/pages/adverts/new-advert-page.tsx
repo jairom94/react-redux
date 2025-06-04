@@ -29,11 +29,10 @@ const NewAdvertPage = () => {
   // const previewImage = useRef<HTMLPictureElement>(null);
 
   const { name, type, price, tags, photo } = advert;
-  //   const Tags = ["work", "lifestyle", "mobile", "motor"];
   const [Tags, setTags] = useState<Tag[]>([]);
   const [ranNum, setRanNum] = useState(Math.random);
   const isDisabled =
-    !name || !type || Number(price) === 0 || tags.length === 0 || !photo;
+    !name || !type || Number(price) === 0 || tags.length === 0;
   useEffect(() => {
     getTags()
       .then((tags_) => setTags(tags_))

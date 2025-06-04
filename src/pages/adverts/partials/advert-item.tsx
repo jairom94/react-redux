@@ -8,6 +8,7 @@ import { DeleteIcon } from "../../../components/icons/delete-icon";
 import { deleteAdvert } from "../service";
 import { createPortal } from "react-dom";
 import { Link } from "react-router";
+import photoPlaceholder from '../../../assets/placeholder_image.png';
 
 
 interface AdvertItemProps {
@@ -16,6 +17,7 @@ interface AdvertItemProps {
 }
 const AdvertItem = ({advert:{name,id,photo,price,tags,sale},onDelete}: AdvertItemProps) => {
   const refModal = useRef<HTMLDialogElement>(null);  
+  const photoClear = photo ? photo as string : photoPlaceholder
 
   function handleClickShowModal(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -49,7 +51,7 @@ const AdvertItem = ({advert:{name,id,photo,price,tags,sale},onDelete}: AdvertIte
           <figure className="relative">
             <img
               className="aspect-video w-full rounded-md object-cover object-center"
-              src={photo as string}
+              src={photoClear}
               alt={`photo ${name}`}
             />
             <span

@@ -2,22 +2,24 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { detailAdvert } from "./service";
 import type { Advert } from "./types";
+import imagePlaceholder from '../../assets/placeholder_image.png';
 
 const AdvertPage = () => {
   const { advertId } = useParams();
   const [advert, setAdverts] = useState<Advert | null>(null);
+  const photoClear = advert?.photo ? advert?.photo as string : imagePlaceholder
   useEffect(() => {
     if (advertId) {
       detailAdvert(advertId).then((data) => setAdverts(data));
     }
-  }, []);
+  }, [advertId]);
   return (
     <div className="flex-1">
       <div className="m-[0_auto] max-w-[80dvw] py-8 grid grid-cols-1 md:grid-cols-3 md:gap-5">
         <figure className="relative md:col-span-2">
           <img
             className="aspect-video rounded-md object-cover object-center"
-            src={advert?.photo as string}
+            src={photoClear}
             alt="Product Image"
           />
           <span
