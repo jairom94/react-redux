@@ -32,6 +32,11 @@
   margin: 0 auto;
 }
 
+@utility container-adverts {
+  max-width: 80dvw;
+  margin: 0 auto;
+}
+
 .active-navbar {
   @apply text-emerald-500 font-medium;
 }
