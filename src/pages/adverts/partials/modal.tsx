@@ -1,4 +1,4 @@
-import React, { type ComponentProps, type ReactNode } from 'react';
+import { type ComponentProps, type ReactNode } from 'react';
 
 
 interface ModalProps extends ComponentProps<'dialog'> {    

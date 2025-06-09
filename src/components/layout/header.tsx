@@ -120,6 +120,7 @@ const Header = () => {
         <NavLink
           className={`flex items-center gap-1 rounded-4xl border-2 border-emerald-500 bg-emerald-500 px-6 py-2 font-medium transition-opacity duration-300 hover:opacity-70`}
           to="/adverts/new"
+          onClick={()=>setShowMenu(false)}
         >
           <span>
             <PlusIcon />
@@ -195,6 +196,7 @@ const Header = () => {
         <ul>          
           <li>
             <NavLink 
+            onClick={()=>setShowMenu(false)}
             className={({isActive})=>(isActive ? 'border-b-2':'hover:border-b-2')}
             end
             to="/adverts">

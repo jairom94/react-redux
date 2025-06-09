@@ -83,7 +83,7 @@ const HeroSlider = () => {
           onMouseLeave={() => setIsHover(false)}
           key={slider.name}
           ref={slider.el}
-          className={`grid h-full grid-cols-2 md:grid-cols-[450px_1fr] overflow-hidden transition-all duration-500 ease-linear ${slider.bg} ${slider.expand ? "w-full" : "w-[50px] [&>div:first-child]:hidden [&>figure]:col-span-2 [&>figure]:brightness-50"} `}
+          className={`cursor-pointer grid h-full grid-cols-2 md:grid-cols-[450px_1fr] overflow-hidden transition-all duration-500 ease-linear ${slider.bg} ${slider.expand ? "w-full" : "w-[50px] [&>div:first-child]:hidden [&>figure]:col-span-2 [&>figure]:brightness-50"} `}
         >
           <div className={`flex flex-col justify-between px-4 py-8`}>
             <h3
