@@ -15,7 +15,7 @@ export const getTags = async () => {
     return response.data
 }
 
-export const createAdvert = async (advertFormData:FormData) => {
+export const createAdvert = async (advertFormData:Advert) => {    
     const response = await client.post<Advert>(URL_ADVERTS,advertFormData);
     return response.data
 }

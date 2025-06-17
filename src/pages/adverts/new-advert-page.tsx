@@ -101,29 +101,17 @@ const NewAdvertPage = () => {
     };
   }
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
     try {
-      const advertFormData = new FormData();
-      Object.entries(advert).forEach(([key, value]) => {
-        if (key !== "type") {
-          if (!value) return;
-          if (value instanceof File || value instanceof Blob) {
-            advertFormData.append(key, value);
-          }          
-          else if (Array.isArray(value)) {                       
-            advertFormData.append(key, value.join(','));            
-          }else{          
-            advertFormData.append(key, String(value));
-          }
-            
-        }
-      });
-      const resp = await createAdvert(advertFormData);      
+      e.preventDefault();
+      const newAdvert:Advert = Object.entries(advert).reduce((acc,[key,value])=>{
+        if(key === 'type' || (key === 'photo' && !value))return acc                
+        acc[key] = value
+        return acc
+      },{} as Advert)
+      const resp = await createAdvert(newAdvert);      
       setAdvert(initialValueAdvert);
       setRanNum(Math.random);
-      alert(`Anuncio creado: ${resp.name}`)
-      // console.log(resp);
+      alert(`Anuncio creado: ${resp.name}`)      
     } catch (error) {
       if(error instanceof AxiosError){
         alert(`Error: ${error.message}`)
