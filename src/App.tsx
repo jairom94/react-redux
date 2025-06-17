@@ -7,8 +7,9 @@ import LoginLoader from "./components/ui/login-loader";
 import AdvertsPage from "./pages/adverts/adverts-page";
 import NewAdvertPage from "./pages/adverts/new-advert-page";
 import AdvertPage from "./pages/adverts/advert-page";
-import RequireAuth from "./pages/auth/require-auth";
+// import RequireAuth from "./pages/auth/require-auth";
 import NotFoundPage from "./pages/404/not-found";
+import { LayoutAdverts } from "./components/layout/layout-adverts";
 // import LoginPage from "./pages/auth/login-page";
 //package json dev concurrently \"npm:dev:vite\" \"npm:lint:watch\" \"npm:format:watch\"
 
@@ -18,22 +19,16 @@ function App() {
   return (
     <Routes>
       <Route path="" element={<Layout />}>
-        <Route index element={<HomePage />} />
-        <Route path="/adverts">
+        <Route index element={<HomePage />} />        
+        <Route path="/adverts" element={<LayoutAdverts />}>
           <Route index element={
-            <RequireAuth>
               <AdvertsPage />
-            </RequireAuth>
             } />
           <Route path="new" element={
-            <RequireAuth>
               <NewAdvertPage />
-            </RequireAuth>
           } />
           <Route path=":advertId" element={
-            <RequireAuth>
-              <AdvertPage />
-            </RequireAuth>
+              <AdvertPage />            
             } />
         </Route>
         
