@@ -103,7 +103,7 @@ const AdvertsPage = () => {
     
     
   }
-  console.log(adverts,advertsFilters);
+  // console.log(adverts,advertsFilters);
   
   return (
     <div className="m-[0_auto] max-w-[90dvw] py-5 md:grid md:max-w-[100dvw] md:grid-cols-[minmax(350px,350px)_1fr]">
@@ -111,7 +111,7 @@ const AdvertsPage = () => {
         <p ><span>Ir a</span> <Link to={`/`}>Inicio</Link> / <Link to={`/adverts`}><span>Anuncios</span></Link></p> {searchByCategory && ( <p>&nbsp;/ <Link to={`/adverts?category=${searchByCategory}`}><span className="capitalize">{searchByCategory}</span></Link></p> )}
       </div>
       {/* Filtrado */}
-      <div className="flex flex-col gap-5 p-3 [&>div]:flex [&>div]:flex-col">
+      <div className="flex flex-col gap-5 p-3 [&>div]:flex [&>div]:flex-col md:self-start md:sticky md:top-[var(--h-header-md)] md:left-0">
         <h3 className="font-sans text-2xl font-medium tracking-widest text-emerald-900">
           Filtros
         </h3>

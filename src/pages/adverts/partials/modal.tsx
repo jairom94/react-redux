@@ -7,9 +7,10 @@ interface ModalProps extends ComponentProps<'dialog'> {
 const Modal = ({children,...props}:ModalProps) => {
     return (
         <dialog className={`
-        backdrop:backdrop-blur-2xl backdrop:bg-gradient-to-b 
+        backdrop:backdrop-blur-xl backdrop:bg-gradient-to-b 
         backdrop:from-white/20 backdrop:to-transparent
-        backdrop:pointer-events-none m-auto
+        backdrop:pointer-events-none m-auto rounded-md
+        shadow-2xl
         `} {...props}>
             {children}
         </dialog>

@@ -56,12 +56,12 @@ const Header = () => {
     }
   }
   return (
-    <div
+    <header
       className={`sticky top-0 left-0 z-50 flex flex-col 
-        gap-2 bg-gray-50 
-        md:gap-6 md:px-7 md:py-7`}
+        gap-2 bg-gray-50 shadow-md 
+        md:gap-6 md:py-7`}
     >
-      <div className="flex items-center md:gap-2 px-3 md:px-0">
+      <div className="flex items-center md:gap-2 px-3 md:px-7">
         <Link to={'/login'}>
         <figure className="flex items-center justify-center pt-1">
           <picture>
@@ -129,7 +129,7 @@ const Header = () => {
         </NavLink>
       </div>
       </div>
-      <nav className="relative flex gap-3 px-3 items-center pb-3" >
+      <nav className="relative flex gap-3 px-3 md:px-7 items-center pb-3 md:pb-0" >
         <div>          
           <input 
           className="hidden"
@@ -138,7 +138,8 @@ const Header = () => {
           type="checkbox" name="" id="menu-vertical" />
           <label htmlFor="menu-vertical" className={`
             flex items-center gap-2 cursor-pointer
-            hover:border-b-2 border-gray-600
+            transition-all duration-300
+            hover:border-gray-600 border-b-2 border-gray-50
             ${showmenu ? 'border-b-2' : ''}
             `}>
             <span>
@@ -152,15 +153,15 @@ const Header = () => {
         <div 
         onClick={()=>{setShowMenu(false)}}
         className={`
-          md:h-[calc(100vh-168px)] md:top-[168px]
-          fixed -left-3 top-[97px] right-0 h-[calc(100vh-97px)] bg-black/80
+          md:h-[calc(100vh-var(--h-header-md))] md:top-[var(--h-header-md)]
+          fixed -left-3 top-[var(--h-header)] right-0 h-[calc(100vh-var(--h-header))] bg-black/80
           ${ showmenu ? '' : 'hidden' } z-10
           `}>            
         </div>
         <div className={`
-        fixed top-[97px] md:top-[168px] 
-          md:h-[calc(100vh-168px)]
-          h-[calc(100vh-97px)] w-[300px] z-20
+        fixed top-[97px] md:top-[var(--h-header-md)] 
+          md:h-[calc(100vh-var(--h-header-md))]
+          h-[calc(100vh-var(--h-header))] w-[300px] z-20
           ${ showmenu ? 'left-0' : 'left-[-300px]' }
           bg-white transition-all duration-300
           px-2
@@ -197,7 +198,7 @@ const Header = () => {
           <li>
             <NavLink 
             onClick={()=>setShowMenu(false)}
-            className={({isActive})=>(isActive ? 'border-b-2':'hover:border-b-2')}
+            className={({isActive})=>(`border-b-2 border-gray-50 transition-all duration-300 hover:border-gray-600 ${isActive ? 'border-gray-600':''}`)}
             end
             to="/adverts">
               Anuncios Publicados
@@ -205,7 +206,7 @@ const Header = () => {
           </li>
         </ul>
       </nav>      
-    </div>
+    </header>
   );
 };
 
