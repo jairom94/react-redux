@@ -19,3 +19,8 @@ export interface FilterByAdverts {
         type:string;
         tags:string[]
     }
+
+export interface RadioType {
+  value:string;
+  state:boolean;
+}

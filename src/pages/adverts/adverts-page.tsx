@@ -1,46 +1,31 @@
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
-import type { Advert, FilterByAdverts, Tag } from "./types";
+import { useEffect, useMemo, useState } from "react";
+import type { Advert, FilterByAdverts } from "./types";
 import AdvertItem from "./partials/advert-item";
-import { getAdverts, getTags } from "./service";
-// import { DeleteIcon } from '../../components/icons/delete-icon';
-import { CloseIcon } from "../../components/icons/close-icon";
+import { getAdverts } from "./service";
 import manage from "../../utils/manage";
-import notFoundPlaceholder from "../../assets/not-found.jpg";
-import { Link, useSearchParams } from "react-router";
-// import { Link } from 'react-router';
-
-interface RadioType {
-  value:string;
-  state:boolean;
-}
+import { useSearchParams } from "react-router";
+import Filter from "./partials/filter";
+import NoAdverts from "./partials/no-adverts";
+import BreadCrumbs from "./partials/bread-crumbs";
 
 
 const AdvertsPage = () => {
-  const [adverts, setAdverts] = useState<Advert[]>([]);
-  const [tags, settags] = useState<Tag[]>([]);
+  const [adverts, setAdverts] = useState<Advert[]>([]);  
   const [filters, setFilters] = useState<FilterByAdverts>({
     name: "",
     type: "",
     tags: [],
-  });
-  const [typesAdvert,setTypesAdverts] = useState<RadioType[]>([
-    {value:'compra',state:false},
-    {value:'venta',state:false},
-    {value:'todos',state:true}
-  ])
-  const selectFilterRef = useRef<HTMLSelectElement>(null);
+  });  
 
-  const [searchParams] = useSearchParams()
-  const searchByCategory = searchParams.get('category') ?? ''
+  const [searchParams] = useSearchParams();
+  const searchByCategory = searchParams.get("category") ?? "";
 
   useEffect(() => {
     getAdverts(searchByCategory)
       .then((data) => setAdverts(data))
-      .catch((err) => alert(err));
-    getTags()
-      .then((tags_) => settags(tags_))
-      .catch((err) => alert(err));
-  }, [searchByCategory]);    
+      .catch((err) => alert(err));    
+  }, [searchByCategory]);
+
   const advertsFilters = useMemo(() => {
     return manage.filterAdverts(adverts, filters);
   }, [adverts, filters]);
@@ -48,198 +33,56 @@ const AdvertsPage = () => {
   function handleDeleteAdvert(advertId: string) {
     const newAdverts = adverts.filter(({ id }) => id !== advertId);
     setAdverts(newAdverts);
-  }
-  function handleChangeName(e: ChangeEvent<HTMLInputElement>) {
+  }  
+  function changeName(name: string) {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      name: e.target.value,
+      name,
     }));
   }
-  function handleChangeCategory(e: ChangeEvent<HTMLSelectElement>) {
-    if(!e.target.value)return
+  function changeTypeFilters(type:string){
     setFilters((prevFilters) => ({
       ...prevFilters,
-      tags: [...filters.tags, e.target.value],
+      type,
     }));
-    Array.from(e.target.children).forEach((el) => {
-      if (el.textContent === e.target.value) {
-        el.setAttribute("disabled", "");
-      }
-    });
-    Array.from(e.target.children)[0].removeAttribute('selected')
   }
-  function handleCloseTagFilter(tag: string) { 
-    const temp = [...filters.tags.filter((t) => t !== tag)]    
+  function addTagToFilters(tag:string){
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      tags: [...filters.tags, tag],
+    }));
+  }
+  function removeTagFromFIlters(tag:string){
+    const temp = [...filters.tags.filter((t) => t !== tag)];
     setFilters((prevFilters) => ({
       ...prevFilters,
       tags: temp,
     }));
-    const selectFilter = selectFilterRef.current;
-    if (!selectFilter) return;
-    Array.from(selectFilter.children).forEach((el) => {
-      if (el.textContent === tag) {
-        el.removeAttribute("disabled");
-      }      
-    });
-    if(temp.length === 0){
-        Array.from(selectFilter.children)[0].setAttribute('selected','');
-    }else {
-      Array.from(selectFilter.children)[0].removeAttribute('selected');
-    }
   }
-  function handleChangeType(e: ChangeEvent<HTMLInputElement>) {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      type: e.target.value,
-    }));
-    let temp = typesAdvert.map(ta => {
-      if (ta.value === e.target.value) {
-        return {...ta,state:true}
-      }
-      return {...ta, state:false}
-    })    
-    setTypesAdverts(temp)
-    temp = []
-    
-    
-  }
-  // console.log(adverts,advertsFilters);
-  
   return (
     <div className="m-[0_auto] max-w-[90dvw] py-5 md:grid md:max-w-[100dvw] md:grid-cols-[minmax(350px,350px)_1fr]">
-      <div className="tracking-wider col-span-2 p-7 flex [&>p>a]:text-emerald-600 [&>a]:cursor-pointer">
-        <p ><span>Ir a</span> <Link to={`/`}>Inicio</Link> / <Link to={`/adverts`}><span>Anuncios</span></Link></p> {searchByCategory && ( <p>&nbsp;/ <Link to={`/adverts?category=${searchByCategory}`}><span className="capitalize">{searchByCategory}</span></Link></p> )}
+      
+      {/* BreadCrumbs */}
+      <div className="col-span-2 flex p-7 tracking-wider [&>a]:cursor-pointer [&>p>a]:text-emerald-600">
+        <BreadCrumbs  searchByCategory={searchByCategory} />
       </div>
-      {/* Filtrado */}
-      <div className="flex flex-col gap-5 p-3 [&>div]:flex [&>div]:flex-col md:self-start md:sticky md:top-[var(--h-header-md)] md:left-0">
-        <h3 className="font-sans text-2xl font-medium tracking-widest text-emerald-900">
-          Filtros
-        </h3>
-        <div>
-          <label
-            htmlFor=""
-            className="text-lg font-medium tracking-wider text-emerald-700"
-          >
-            Nombre
-          </label>
-          <input
-            value={filters.name}
-            onChange={handleChangeName}
-            type="text"
-            className="rounded-lg border border-emerald-500 px-3 py-1 focus:outline-emerald-700"
-          />
-        </div>
-        <div>
-          <h3 className="text-lg font-medium tracking-wider text-emerald-700">
-            Tipo de Anuncio
-          </h3>
-          <div
-          className="flex flex-col gap-2 [&>label]:text-emerald-600 [&>label]:cursor-pointer [&>label>input]:cursor-pointer [&>label]:has-checked:text-emerald-800 [&>label]:has-checked:font-medium [&>label]:transition-colors [&>label]:duration-300"
-          >
-            <label
-              className="grid grid-cols-[40px_1fr]"
-              htmlFor="compra"
-            >
-              <input
-              checked={typesAdvert[0].state}
-                onChange={handleChangeType}
-                type="radio"
-                name="sale"
-                value="compra"
-                id="compra"
-              />
-              <span>Compra</span>
-            </label>
-            <label
-              className="grid grid-cols-[40px_1fr]"
-              htmlFor="venta"
-            >
-              <input
-              checked={typesAdvert[1].state}
-                onChange={handleChangeType}
-                type="radio"
-                name="sale"
-                value="venta"
-                id="venta"
-              />
-              <span>Venta</span>
-            </label>
-            <label
-              className="grid grid-cols-[40px_1fr]"
-              htmlFor="todos"
-            >
-              <input
-                checked={typesAdvert[2].state}
-                onChange={handleChangeType}
-                type="radio"
-                name="sale"
-                value="todos"
-                id="todos"
-              />
-              <span>Todos</span>
-            </label>
-          </div>
-        </div>
-        { !searchByCategory && (
-          <div className="flex gap-2">
-          <label
-            className="text-lg font-medium tracking-wider text-emerald-700"
-            htmlFor="category"
-          >
-            Seleccionar categoria
-          </label>
-          <ul className="flex gap-2">
-            {filters.tags.map((tag) => (
-              <li
-                key={tag}
-                className={`group flex items-center justify-center gap-1 rounded-3xl border border-emerald-500 px-3 py-1 font-medium text-emerald-800 has-[button:hover]:border-red-500`}
-              >
-                <span className="leading-none transition-colors has-[+button:hover]:text-red-500">
-                  {tag}
-                </span>
-                <button
-                  onClick={() => handleCloseTagFilter(tag)}
-                  className="cursor-pointer p-0 text-xs hover:text-red-500"
-                >
-                  <CloseIcon />
-                </button>
-              </li>
-            ))}
-          </ul>
-          <select
-            className="rounded-lg border border-emerald-500 px-3 py-1 font-medium text-emerald-800 focus:outline-emerald-700"            
-            onChange={handleChangeCategory}
-            ref={selectFilterRef}
-            name="tags"
-            id="category"
-          >
-            <option value="">
-              Seleccionar opcion
-            </option>
-            {tags.map((tag) => (
-              <option value={tag}>{tag}</option>
-            ))}
-          </select>
-        </div>
-        ) }
-      </div>
+
+      {/* Filtrado */}     
+      <Filter 
+      filters={filters} 
+      onChangeName={changeName} 
+      onChangeTypeFilters={changeTypeFilters}
+      showByCategory={searchByCategory}
+      addTagToFilters={addTagToFilters}
+      removeTagFromFIlters={removeTagFromFIlters}
+      />
       <ul
         className={`grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-[minmax(280px,_1fr)_minmax(280px,_1fr)_minmax(280px,_1fr)_minmax(280px,_1fr)] md:px-2`}
       >
-        {(adverts.length > 0 || adverts.length == 0) && advertsFilters.length === 0 && (
-          <li>
-            <figure className="relative">
-              <img
-                className="aspect-video w-full rounded-md object-cover object-center"
-                src={notFoundPlaceholder}
-                alt={`photo ${name}`}
-              />
-            </figure>
-            <p className="text-xl font-medium">
-              No se encontró los anuncios que busca.
-            </p>
-          </li>
-        )}
+        {(adverts.length > 0 || adverts.length == 0) &&
+          advertsFilters.length === 0 && (
+            <NoAdverts />            
+          )}
         {advertsFilters.map((advert) => (
           <AdvertItem
             key={advert.id}
