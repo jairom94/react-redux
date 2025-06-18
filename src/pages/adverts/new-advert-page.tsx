@@ -127,7 +127,7 @@ const NewAdvertPage = () => {
   //   console.log(cont.current);
   return (
     <div
-      className={`mx-auto my-0 flex max-w-[80dvw] flex-1 flex-col items-center justify-center pb-7 md:mx-auto md:my-0 md:max-w-[500px]`}
+      className={`mx-auto my-0 flex max-w-[80dvw] flex-1 flex-col items-center justify-center pb-7 pt-5 md:mx-auto md:my-0 md:max-w-[500px]`}
     >
       <form className={`flex w-full flex-col gap-2`} onSubmit={handleSubmit}>
         <FormField
