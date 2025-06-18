@@ -15,6 +15,7 @@ import ButtonCustom from "../../components/ui/button";
 import { createAdvert, getTags } from "./service";
 import PreviewImage from "./partials/preview-image";
 import { AxiosError } from "axios";
+import { useNavigate } from "react-router";
 
 const NewAdvertPage = () => {
   const initialValueAdvert: Advert = {
@@ -27,6 +28,8 @@ const NewAdvertPage = () => {
   const [advert, setAdvert] = useState<Advert>(initialValueAdvert);
   const photoFile = useRef<HTMLInputElement>(null);
   // const previewImage = useRef<HTMLPictureElement>(null);
+
+  const navigate = useNavigate()
 
   const { name, type, price, tags, photo } = advert;
   const [Tags, setTags] = useState<Tag[]>([]);
@@ -108,10 +111,11 @@ const NewAdvertPage = () => {
         acc[key] = value
         return acc
       },{} as Advert)
-      const resp = await createAdvert(newAdvert);      
+      const advertCreated = await createAdvert(newAdvert);      
       setAdvert(initialValueAdvert);
       setRanNum(Math.random);
-      alert(`Anuncio creado: ${resp.name}`)      
+      // alert(`Anuncio creado: ${resp.name}`)
+      navigate(`/adverts/${advertCreated.id}`,{replace:true})
     } catch (error) {
       if(error instanceof AxiosError){
         alert(`Error: ${error.message}`)

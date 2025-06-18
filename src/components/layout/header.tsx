@@ -145,7 +145,7 @@ const Header = () => {
               <BurgerMenu />
             </span>
             <span>
-              Ver Categorias
+              Ver por categorías
             </span>
           </label>
         </div>
