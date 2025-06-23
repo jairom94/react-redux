@@ -9,7 +9,8 @@ interface RequireAuthProps {
 function RequireAuth({ children }: RequireAuthProps) {
   const { isLogged } = useAuth();
   const location = useLocation();
-
+  console.log(location.pathname);
+  
   if (!isLogged) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }

@@ -182,7 +182,7 @@ const Filter = ({
           >
             <option value="">Seleccionar opcion</option>
             {tags.map((tag) => (
-              <option value={tag}>{tag}</option>
+              <option key={tag} value={tag}>{tag}</option>
             ))}
           </select>
         </div>

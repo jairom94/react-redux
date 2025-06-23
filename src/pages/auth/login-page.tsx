@@ -7,6 +7,7 @@ import { LogIn } from "./service";
 import LoginLoader from "../../components/ui/login-loader";
 import { useAuth } from "./context";
 import { useLocation, useNavigate } from "react-router";
+import { useUserInformation } from "./me/context";
 
 const LoginPage = () => {
   const [credentials, setCredentials] = useState<Login>({
@@ -15,6 +16,8 @@ const LoginPage = () => {
   });
   const [rememberMe, setRememberMe] = useState(false);
   const { isLogged, onLogin } = useAuth();
+  const { onUserLogged } = useUserInformation();
+
   const navigate = useNavigate();
   const location = useLocation();
   const { email, password } = credentials;
@@ -36,7 +39,8 @@ const LoginPage = () => {
       //   setIsLogin(true);
       await LogIn({ email, password }, rememberMe);
       onLogin();
-
+      onUserLogged();
+      
       const to = location.state?.from ?? "/";
       navigate(to, { replace: true });
     } catch (error) {
@@ -47,7 +51,7 @@ const LoginPage = () => {
     }
   }
   const isDisabled = !email || !password;
-  console.log(isLogged);
+  // console.log(isLogged);
   
   return (
     <>

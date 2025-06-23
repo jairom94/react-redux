@@ -15,3 +15,5 @@ export interface UserResponse extends Omit<User, "password"> {
   id: string;
   createdAt: string;
 }
+
+

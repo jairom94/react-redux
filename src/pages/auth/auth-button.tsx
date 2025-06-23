@@ -1,16 +1,25 @@
 import { NavLink } from "react-router";
 import { useAuth } from "../../pages/auth/context";
-import { logOut } from "../../pages/auth/service";
+// import { logOut } from "../../pages/auth/service";
 import { UserIcon } from "../../components/icons/user-icon";
 import { LogoutIcon } from "../../components/icons/logout-icon";
+// import { useUserInformation } from "./me/context";
+import { useRef } from "react";
+import ModalConfirm from "../adverts/partials/modal-confirm";
 
 export default function AuthButton() {
-  const { isLogged, onLogout } = useAuth();
+  const { isLogged } = useAuth();
+  const modalRef = useRef<HTMLDialogElement>(null)
+
   const handleLogoutClick = async () => {
-    await logOut();
-    onLogout();
+    const modalConfirm = modalRef.current
+    if(modalConfirm){
+      modalConfirm.showModal()
+    }
+    
   };
   return isLogged ? (
+    <>
     <button 
     className="size-full flex flex-col justify-center items-center cursor-pointer"
     onClick={handleLogoutClick}>
@@ -19,6 +28,8 @@ export default function AuthButton() {
       </span>
       <span>Logout</span>
     </button>
+    <ModalConfirm ref={modalRef} />
+    </>
   ) : (
     <NavLink
       className={({ isActive }) => (isActive ? "active-navbar" : "")}
