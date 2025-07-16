@@ -1,5 +1,5 @@
 import "./login-loader.css";
-import React from "react";
+// import React from "react";
 
 const LoginLoader = () => {
   return (

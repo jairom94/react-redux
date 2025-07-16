@@ -14,15 +14,14 @@ export const singUp = async (bodyUser: User) => {
   return response.data;
 };
 
-export const LogIn = async (bodyLogin: Login,remember:boolean) => {
+export const LogIn = async (bodyLogin: Login, remember: boolean) => {
   const url = `${URL_AUTH}/login`;
   const response = await client.post<LoginResponse>(url, bodyLogin);
-  const { accessToken } = response.data;
-  if(remember){
-    storage.set("auth", accessToken);
-  }
-
-  setAuthorizationHeader(accessToken);
+    const { accessToken } = response.data;
+    if (remember) {
+      storage.set("auth", accessToken);
+    }
+    setAuthorizationHeader(accessToken);
 };
 
 export const logOut = async () => {

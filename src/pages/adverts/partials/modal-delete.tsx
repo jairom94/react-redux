@@ -6,6 +6,7 @@ import type { Advert } from "../types";
 import { deleteAdvert } from "../service";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router";
+import { useNotification } from "../../../components/ui/notification/context";
 
 interface ModalDeleteProps extends ComponentProps<'dialog'> {
     advert:Advert;
@@ -13,17 +14,29 @@ interface ModalDeleteProps extends ComponentProps<'dialog'> {
 
 const ModalDelete = ({advert:{id,name},...props}:ModalDeleteProps) => { 
     const navigate = useNavigate()   
+    const { addNoti } = useNotification()
     function handleClickCloseModal(){
         const modalRef:RefObject<HTMLDialogElement> = props.ref as RefObject<HTMLDialogElement>
         modalRef.current.close()
     }
     async function handleClickAccept(){
         try {
-            await deleteAdvert(id as string)
+            await deleteAdvert(id as string)            
             navigate('/adverts')
+            addNoti({
+              message:'Advert was deleted, successull',
+              id:crypto.randomUUID(),
+              type:'success',
+              createdAt:Date.now()
+            })
         } catch (error) {
             if(error instanceof AxiosError){
-                alert(error)
+                addNoti({
+                  message:error.message,
+                  id:crypto.randomUUID(),
+                  type:'error',
+                  createdAt:Date.now()
+                })
             }
         }
     }

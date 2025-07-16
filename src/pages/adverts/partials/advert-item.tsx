@@ -9,6 +9,8 @@ import { deleteAdvert } from "../service";
 import { createPortal } from "react-dom";
 import { Link } from "react-router";
 import photoPlaceholder from '../../../assets/placeholder_image.png';
+import { useNotification } from "../../../components/ui/notification/context";
+import { AxiosError } from "axios";
 
 
 interface AdvertItemProps {
@@ -18,6 +20,8 @@ interface AdvertItemProps {
 const AdvertItem = ({advert:{name,id,photo,price,tags,sale},onDelete}: AdvertItemProps) => {
   const refModal = useRef<HTMLDialogElement>(null);  
   const photoClear = photo ? photo as string : photoPlaceholder
+
+  const { addNoti } = useNotification()
 
   function handleClickShowModal(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -38,8 +42,21 @@ const AdvertItem = ({advert:{name,id,photo,price,tags,sale},onDelete}: AdvertIte
     try {
       await deleteAdvert(id as string);
       onDelete(id as string);
+      addNoti({
+        message:'Advert was deleted, successfull',
+        id:crypto.randomUUID(),
+        type:'success',
+        createdAt:Date.now()
+      })
     } catch (error) {
-      alert(error);
+      if(error instanceof AxiosError){
+        addNoti({
+          message:error.message,
+          id:crypto.randomUUID(),
+          type:'error',
+          createdAt:Date.now()
+        })
+      }
     }
 
     refModal.current?.close();

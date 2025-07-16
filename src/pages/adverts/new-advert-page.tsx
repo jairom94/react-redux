@@ -16,6 +16,7 @@ import { createAdvert, getTags } from "./service";
 import PreviewImage from "./partials/preview-image";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router";
+import { useNotification } from "../../components/ui/notification/context";
 
 const NewAdvertPage = () => {
   const initialValueAdvert: Advert = {
@@ -30,6 +31,8 @@ const NewAdvertPage = () => {
   // const previewImage = useRef<HTMLPictureElement>(null);
 
   const navigate = useNavigate()
+
+  const { addNoti } = useNotification()
 
   const { name, type, price, tags, photo } = advert;
   const [Tags, setTags] = useState<Tag[]>([]);
@@ -114,6 +117,12 @@ const NewAdvertPage = () => {
       const advertCreated = await createAdvert(newAdvert);      
       setAdvert(initialValueAdvert);
       setRanNum(Math.random);
+      addNoti({
+        message:'Success, advert created',
+        id:crypto.randomUUID(),
+        type:'success',
+        createdAt:Date.now()
+      })
       // alert(`Anuncio creado: ${resp.name}`)
       navigate(`/adverts/${advertCreated.id}`,{replace:true})
     } catch (error) {

@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
+import "./components/ui/notification/notification.css";
 import App from "./App.tsx";
 import { BrowserRouter } from "react-router";
 import AuthProvider from "./pages/auth/auth-provider.tsx";

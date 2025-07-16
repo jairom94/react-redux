@@ -8,6 +8,9 @@ import LoginLoader from "../../components/ui/login-loader";
 import { useAuth } from "./context";
 import { useLocation, useNavigate } from "react-router";
 import { useUserInformation } from "./me/context";
+// import useNotifications from "../../components/ui/notification/useNotifications";
+// import Notfications from "../../components/ui/notification/notifications";
+import { useNotification } from "../../components/ui/notification/context";
 
 const LoginPage = () => {
   const [credentials, setCredentials] = useState<Login>({
@@ -17,10 +20,14 @@ const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const { isLogged, onLogin } = useAuth();
   const { onUserLogged } = useUserInformation();
+  const [isLoading,setIsLoading] = useState(false);  
 
   const navigate = useNavigate();
   const location = useLocation();
   const { email, password } = credentials;
+
+  const { addNoti } = useNotification()
+  // const { notifications,addNoti,handleNotifications } = useNotifications()
 
   useEffect(() => {
     if (isLogged) {
@@ -37,24 +44,42 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       //   setIsLogin(true);
+      setIsLoading(true)
       await LogIn({ email, password }, rememberMe);
       onLogin();
-      onUserLogged();
-      
+      onUserLogged();      
+      addNoti({
+        message:'Login success',
+        id:crypto.randomUUID(),
+        type:'success',
+        createdAt:Date.now()
+      })
       const to = location.state?.from ?? "/";
       navigate(to, { replace: true });
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-        alert(error);
+      if (error instanceof AxiosError) {        
+        addNoti({
+          message:`${error.response?.data.message} - ${error.response?.data.statusCode}`,
+          type:'error',
+          id:crypto.randomUUID(),
+          createdAt: Date.now()
+        })
+        // alert(error);
+
       }
+    } finally {
+      setIsLoading(false)
     }
   }
   const isDisabled = !email || !password;
-  // console.log(isLogged);
+  // console.log(isLogged);  
+
+  if(isLoading){
+    return <LoginLoader />
+  }  
   
   return (
-    <>
+    <>      
       {isLogged ? (
         <LoginLoader />
       ) : (
@@ -92,7 +117,7 @@ const LoginPage = () => {
                       setRememberMe(e.target.checked);
                     }}
                     type="checkbox"
-                    name=""
+                    name="remenber"
                     id="remenber"
                   />
                 </label>

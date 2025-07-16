@@ -10,41 +10,53 @@ import AdvertPage from "./pages/adverts/advert-page";
 // import RequireAuth from "./pages/auth/require-auth";
 import NotFoundPage from "./pages/404/not-found";
 import { LayoutAdverts } from "./components/layout/layout-adverts";
+import Notfications from "./components/ui/notification/notifications";
+import { NotificationContext } from "./components/ui/notification/context";
+import useNotifications from "./components/ui/notification/useNotifications";
 // import LoginPage from "./pages/auth/login-page";
 //package json dev concurrently \"npm:dev:vite\" \"npm:lint:watch\" \"npm:format:watch\"
 
 const LoginPage = lazy(() => import("./pages/auth/login-page"));
 
 function App() {
+  const { addNoti,notifications,handleNotifications } = useNotifications()
   return (
-    <Routes>
-      <Route path="" element={<Layout />}>
-        <Route index element={<HomePage />} />        
-        <Route path="/adverts" element={<LayoutAdverts />}>
-          <Route index element={
-              <AdvertsPage />
+    <>
+    <NotificationContext.Provider value={{addNoti}}>
+      <Routes>
+        <Route path="" element={<Layout />}>
+          <Route index element={<HomePage />} />        
+          <Route path="/adverts" element={<LayoutAdverts />}>
+            <Route index element={
+                <AdvertsPage />
+              } />
+            <Route path="new" element={
+                <NewAdvertPage />
             } />
-          <Route path="new" element={
-              <NewAdvertPage />
-          } />
-          <Route path=":advertId" element={
-              <AdvertPage />            
-            } />
+            <Route path=":advertId" element={
+                <AdvertPage />            
+              } />
+          </Route>
+          
         </Route>
-        
-      </Route>
-      <Route path="/signup" element={<SignPage />} />
-      <Route
-        path="/login"
-        element={
-          <Suspense fallback={<LoginLoader />}>
-            <LoginPage />
-          </Suspense>
-        }
-      />   
-      <Route path="/not-found" element={<NotFoundPage/>} />
-      <Route path="*" element={<Navigate to="/not-found" replace />} />  
-    </Routes>
+        <Route path="/signup" element={<SignPage />} />
+        <Route
+          path="/login"
+          element={
+            <Suspense fallback={<LoginLoader />}>
+              <LoginPage />
+            </Suspense>
+          }
+        />   
+        <Route path="/not-found" element={<NotFoundPage/>} />
+        <Route path="*" element={<Navigate to="/not-found" replace />} />  
+      </Routes>
+      <Notfications 
+      notifications={notifications} 
+      handleNotifications={handleNotifications}  
+      />
+    </NotificationContext.Provider>    
+    </>
   );
 }
 
