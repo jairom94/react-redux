@@ -2,6 +2,9 @@ import { createPortal } from 'react-dom';
 import NotificationComponent from './notification';
 import type { Notification } from './types';
 
+// CSS
+import './notification.css';
+
 
 interface NotficationsProps {
     notifications:Notification[];

@@ -2,21 +2,26 @@ import React from "react";
 
 
 interface PreviewImageProps {
-    imageFile:File;
+    imageFile:File | string;
     onClick:()=>void
 }
 const PreviewImage = ({imageFile,onClick}:PreviewImageProps) => {
     function handleClick(){
         onClick()
     }
-    const src = URL.createObjectURL(imageFile)
+    let src;
+    if(imageFile instanceof File){
+      src = URL.createObjectURL(imageFile)
+    }else if(typeof imageFile === 'string'){
+      src = imageFile
+    }
 
   return (
     <>
       <picture>
         <img
           className="aspect-video w-full rounded-md object-cover"
-          src={src}
+          src={src as string}
           alt="Product selected image preview"
         />
         <button

@@ -80,7 +80,7 @@ const LoginPage = () => {
   
   return (
     <>      
-      {isLogged ? (
+      { isLogged ? (
         <LoginLoader />
       ) : (
         <div className="min-h-dvh bg-gray-800 flex justify-center items-center">
