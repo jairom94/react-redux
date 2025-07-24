@@ -1,7 +1,8 @@
 import { AxiosError } from "axios";
 import type { AppThunk } from ".";
-import { createAdvert, deleteAdvert, detailAdvert, getAdverts } from "../pages/adverts/service";
+import { createAdvert, deleteAdvert, detailAdvert, getAdverts, getTags } from "../pages/adverts/service";
 import type { Advert, Tag } from "../pages/adverts/types";
+import type { Modal } from "../pages/adverts/partials/types";
 
 //LOADED ADVERTS
 type AdvertsLoadedPending = {
@@ -58,6 +59,36 @@ type TagsLoadedFullFilled = {
     type:'tags/loaded/fullfilled',
     payload:Tag[]
 }
+
+//MODAL
+type ModalShowFullFilled = {
+    type:'modal/show/fullfilled',
+    payload:Modal<Advert>;
+}
+
+type ModalCloseFullFilled = {
+    type:'modal/close/fullfilled',
+    // payload:Modal<Advert>;
+}
+
+//MODAL
+export const modalShowFullFilled = (modal:Modal<Advert>):ModalShowFullFilled => {
+    // console.log(modal);    
+    return {
+        type:"modal/show/fullfilled",
+        payload:modal
+    }
+}
+export const modalCloseFullFilled = ():ModalCloseFullFilled=> {
+    // console.log(modal);    
+    return {
+        type:"modal/close/fullfilled",
+        // payload:modal
+    }
+}
+
+
+
 
 
 //LOADED TAGS
@@ -119,7 +150,25 @@ export const tagsLoadedFullFilled = (tags:Tag[]):TagsLoadedFullFilled => ({
     payload:tags
 })
 
-//LOADED ADVERTS
+//LOADED TAGS ACTION
+export function tagsLoaded():AppThunk<Promise<void>>{
+    return async function (dispatch) {
+        dispatch(tagsLoadedPending())
+        try {
+            const tags = await getTags()
+            dispatch(tagsLoadedFullFilled(tags))
+        } catch (error) {
+            if(error instanceof AxiosError){
+                dispatch(tagsLoadedRejected(error))
+            }
+            throw error
+        }
+    }
+}
+
+
+
+//LOADED ADVERTS ACTION
 export function advertsLoaded(filterByTag:string):AppThunk<Promise<void>>{
     return async function (dispatch) {
         dispatch(advertsLoadedPending())
@@ -135,7 +184,7 @@ export function advertsLoaded(filterByTag:string):AppThunk<Promise<void>>{
     }
 }
 
-//CREATED ADVERT
+//CREATED ADVERT ACTION
 export function advertsCreated(newAdvert:Advert):AppThunk<Promise<Advert>>{
     return async function (dispatch) {
         dispatch(advertsCreatedPending())
@@ -153,7 +202,7 @@ export function advertsCreated(newAdvert:Advert):AppThunk<Promise<Advert>>{
     }
 }
 
-//DELETED ADVERT
+//DELETED ADVERT ACTION
 export function advertsDeletedOne(advertId:string):AppThunk<Promise<void>>{
     return async function (dispatch) {
         dispatch(advertsDeletedPending())
@@ -187,4 +236,6 @@ export type Actions =
 | TagsLoadedPending
 | TagsLoadedRejected
 | TagsLoadedFullFilled
+| ModalShowFullFilled
+| ModalCloseFullFilled
 | UiResetError

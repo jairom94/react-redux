@@ -11,19 +11,27 @@ import { Link } from "react-router";
 import photoPlaceholder from '../../../assets/placeholder_image.png';
 // import { useNotification } from "../../../components/ui/notification/context";
 // import { AxiosError } from "axios";
-import ModalUpdate from "./modal-update";
+// import ModalUpdate from "./modal-update";
 import ModalDelete from "./modal-delete";
+import { useAppDispatch } from "../../../store";
+import { modalShowFullFilled } from "../../../store/actions";
+import type { Modal } from "./types";
+// import ModalUpdate from "./modal-update";
 
 
 interface AdvertItemProps {
   advert:Advert;
+  // modalToUpdate:HTMLDialogElement;
   // onDelete:(advertId:string)=>void;
 }
 const AdvertItem = ({advert:{name,id,photo,price,tags,sale}}: AdvertItemProps) => {
   const refModal = useRef<HTMLDialogElement>(null);  
-  const refModalUpdate = useRef<HTMLDialogElement>(null);
+  // const refModalUpdate = useRef<HTMLDialogElement>(null);
 
-  const photoClear = photo ? photo as string : photoPlaceholder  
+  const photoClear = photo ? photo as string : photoPlaceholder 
+  
+  
+  const dispatch = useAppDispatch()
   
   // const { addNoti } = useNotification()
 
@@ -38,9 +46,18 @@ const AdvertItem = ({advert:{name,id,photo,price,tags,sale}}: AdvertItemProps) =
   function handleClickShowModalUpdate(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     e.stopPropagation();
-    if (refModalUpdate.current) {      
-      refModalUpdate.current.showModal();
+    const advertToUpdate:Advert = {name,id,photo,price,tags,sale}
+    const modal:Modal<Advert> = {
+      data:advertToUpdate,
+      type:'update',
+      visible:true
     }
+    dispatch(modalShowFullFilled(modal))
+    // console.log(modal);
+    
+    // modalToUpdate.showModal();    
+    // if (refModalUpdate.current) {      
+    // }
   }
 
   // function handleClickCloseModal(e: MouseEvent<HTMLButtonElement>) {
@@ -171,11 +188,11 @@ const AdvertItem = ({advert:{name,id,photo,price,tags,sale}}: AdvertItemProps) =
           document.body
         )
       }
-      {
+      {/* {
         createPortal(
         <ModalUpdate advert={{name,id,photo,price,tags,sale} as Advert} ref={refModalUpdate} />,
         document.body)
-      }
+      }       */}
     </>
   );
 }; 

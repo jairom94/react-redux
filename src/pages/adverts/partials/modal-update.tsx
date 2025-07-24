@@ -1,6 +1,6 @@
 import { useRef, useState, type ChangeEvent, type ComponentProps, type FormEvent, type RefObject } from "react";
 import Modal from "./modal";
-import type { Advert, AdvertResponse } from "../types";
+import type { Advert, AdvertResponse, Tag } from "../types";
 import FormField from "../../../components/ui/form-field";
 import PreviewImage from "./preview-image";
 import ButtonCustom from "../../../components/ui/button";
@@ -8,27 +8,32 @@ import { useNotification } from "../../../components/ui/notification/context";
 import { AxiosError } from "axios";
 import SaleCheck from "../../../components/ui/salecheck/salecheck";
 import TagsSelected from "../../../components/tags/tags-selected";
+import { useAppDispatch } from "../../../store";
+import { modalCloseFullFilled } from "../../../store/actions";
+// import { useAppSelector } from "../../../store";
+// import { getModalShowed } from "../../../store/selectors";
 
-interface ModalUpdateProps extends ComponentProps<"dialog"> {
-  advert: Advert;
+type ModalUpdateProps = ComponentProps<"dialog"> &
+{
+  advert: Advert;  
 }
-const ModalUpdate = ({ advert, ...props }: ModalUpdateProps) => {
+const ModalUpdate = ({advert,...props}:ModalUpdateProps) => {
   const { addNoti } = useNotification();
+  // const { type,data:advert,htmlDialog,visible } = useAppSelector(getModalShowed)
+  const dispatch = useAppDispatch()
   const initialValues:AdvertResponse = {
     id:advert.id as string,
-    name:advert.name,
-    price:advert.price,
-    tags:advert.tags,
-    sale:advert.sale as boolean,
-    photo:advert.photo as string,
-    createdAt:advert.createdAt as string
+    name:advert!.name,
+    price:advert!.price,
+    tags:advert!.tags,
+    sale:advert!.sale as boolean,
+    photo:advert!.photo as string,
+    createdAt:advert!.createdAt as string
   }
   const [advertOld, setAdvertOld] = useState<AdvertResponse>(initialValues)  
   const photoFile = useRef<HTMLInputElement>(null)
 
-  const { name,price,tags,sale,photo } = advertOld  
-  
-
+  const { name,price,tags,sale,photo } = advertOld    
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const advertClear: AdvertResponse = {
@@ -105,7 +110,10 @@ const ModalUpdate = ({ advert, ...props }: ModalUpdateProps) => {
 
   function handleClickCloseModal(){
           const modalRef:RefObject<HTMLDialogElement> = props.ref as RefObject<HTMLDialogElement>
+          dispatch(modalCloseFullFilled())
           modalRef.current.close()
+
+          // el.close()
       }
   return (
     <Modal {...props}>
@@ -135,7 +143,7 @@ const ModalUpdate = ({ advert, ...props }: ModalUpdateProps) => {
             label="Precio"
           />
           <TagsSelected  
-          tagsSelected={tags as string[]}
+          tagsSelected={tags as Tag[]}
           onDeleteTagSelected={handleRemoveTagSelected}
           onChangeTags={handleChangeTags}
           />

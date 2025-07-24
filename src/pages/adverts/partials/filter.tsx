@@ -1,12 +1,12 @@
 import { useState, type ChangeEvent } from "react";
-import type { FilterByAdverts, RadioType } from "../types";
+import type { FilterByAdverts, RadioType, Tag } from "../types";
 import TagsSelected from "../../../components/tags/tags-selected";
 
 interface FilterProps {
   filters: FilterByAdverts;
-  addTagToFilters: (tag: string) => void;
-  removeTagFromFIlters: (tag: string) => void;
-  showByCategory: string;
+  addTagToFilters: (tag: Tag) => void;
+  removeTagFromFIlters: (tag: Tag) => void;
+  showByCategory: Tag | '';
   onChangeTypeFilters: (type: string) => void;
   onChangeName: (name: string) => void;
 }
@@ -24,11 +24,13 @@ const Filter = ({
     { value: "todos", state: true },
   ]);
   const { tags } = filters
+  // console.log(tags);
   
-  function handleChangeTags(tag:string) {
+  
+  function handleChangeTags(tag:Tag) {
     addTagToFilters(tag);   
   }  
-  function handleRemoveTagSelected(tag:string) {       
+  function handleRemoveTagSelected(tag:Tag) {       
     removeTagFromFIlters(tag)
   }
   function handleChangeType(e: ChangeEvent<HTMLInputElement>) {    

@@ -1,91 +1,81 @@
 import { useCallback, useEffect, useState, type ChangeEvent } from "react";
 import { CloseIcon } from "../icons/close-icon";
-import { getTags } from "../../pages/adverts/service";
-import { AxiosError } from "axios";
-import { useNotification } from "../ui/notification/context";
+// import { getTags } from "../../pages/adverts/service";
+// import { AxiosError } from "axios";
+// import { useNotification } from "../ui/notification/context";
+import { useAppSelector } from "../../store";
+import { getTagsRedux } from "../../store/selectors";
+// import { tagsLoaded } from "../../store/actions";
+import type { Tag } from "../../pages/adverts/types";
 
 interface TagsSelectedProps {
-  tagsSelected?: string[];
-  onDeleteTagSelected: (tag: string) => void;
-  onChangeTags:(newTag:string)=>void;
+  tagsSelected: Tag[];
+  onDeleteTagSelected: (tag: Tag) => void;
+  onChangeTags: (newTag: Tag) => void;
 }
 const TagsSelected = ({
   tagsSelected,
   onDeleteTagSelected,
-  onChangeTags
+  onChangeTags,
 }: TagsSelectedProps) => {
-    const [tags,setTags] = useState<string[]>([])    
-    const [disabledTags,setDisabledTags] = useState<string[]>([])  
-    const [selectedTag,setSelectedTag] = useState<string>('')
-    const { addNoti } = useNotification()
-    const checkToDisabled = (tag:string) => disabledTags.includes(tag)
-    useEffect(()=>{
-        getTags()
-        .then(data => setTags(data))
-        .catch(err => {
-            if(err instanceof AxiosError){
-                addNoti({
-                    message: err.response?.data?.message ?? err.message ?? "",
-                    type:'error',
-                    id:crypto.randomUUID(),
-                    createdAt: Date.now()
-                })
-            }
-        })
-        if(Array.isArray(tagsSelected)){
-          setDisabledTags([...tagsSelected])
-        }
-
-    },[])
-  const handleDeleteTagSelected = useCallback((tag: string) => {  
-  if(Array.isArray(tagsSelected) && tagsSelected.length === 0){
-    setSelectedTag('')    
-  }
-
-  onDeleteTagSelected(tag);
-  setDisabledTags(prev => [...prev.filter(t => t !== tag)])
-}, [tagsSelected, onDeleteTagSelected]);
-  function handleChangeCategory(e: ChangeEvent<HTMLSelectElement>){    
+  // const [tags,setTags] = useState<string[]>([])
+  // const dispatch = useAppDispatch();
+  const tags = useAppSelector(getTagsRedux);
+  const [disabledTags, setDisabledTags] = useState<Tag[]>([]);
+  const [selectedTag, setSelectedTag] = useState<Tag | "">("");
+  // const { addNoti } = useNotification()
+  const checkToDisabled = (tag: Tag) => disabledTags.includes(tag);
+  useEffect(() => {
+    setDisabledTags([...tagsSelected]);    
+  }, [tagsSelected]);
+  const handleDeleteTagSelected = useCallback(
+    (tag: Tag) => {
+      if (Array.isArray(tagsSelected) && tagsSelected.length === 0) {
+        setSelectedTag("");
+      }
+      onDeleteTagSelected(tag);
+      setDisabledTags((prev) => [...prev.filter((t) => t !== tag)]);
+    },
+    [tagsSelected, onDeleteTagSelected],
+  );
+  function handleChangeCategory(e: ChangeEvent<HTMLSelectElement>) {
     if (!e.target.value) return;
-    const selected = e.target.value
-    onChangeTags(selected)
-    setDisabledTags(prev => [...prev,selected])
-  }  
+    const selected = e.target.value as Tag;
+    setSelectedTag(selected)
+    onChangeTags(selected);
+    setDisabledTags((prev) => [...prev, selected]);
+  }
 
   return (
     <div className="flex flex-col gap-2">
       <ul className="flex gap-2">
-        {tagsSelected && tagsSelected.map((tag) => (
-          <li
-            key={tag}
-            className={`group flex items-center justify-center gap-1 rounded-3xl border border-emerald-500 px-3 py-1 font-medium text-emerald-800 has-[button:hover]:border-red-500`}
-          >
-            <span className="leading-none transition-colors has-[+button:hover]:text-red-500">
-              {tag}
-            </span>
-            <button
-              onClick={()=>handleDeleteTagSelected(tag)}
-              className="cursor-pointer p-0 text-xs hover:text-red-500"
+        {tagsSelected.map((tag) => (
+            <li
+              key={tag}
+              className={`group flex items-center justify-center gap-1 rounded-3xl border border-emerald-500 px-3 py-1 font-medium text-emerald-800 has-[button:hover]:border-red-500`}
             >
-              <CloseIcon />
-            </button>
-          </li>
-        ))}
+              <span className="leading-none transition-colors has-[+button:hover]:text-red-500">
+                {tag}
+              </span>
+              <button
+                onClick={() => handleDeleteTagSelected(tag)}
+                className="cursor-pointer p-0 text-xs hover:text-red-500"
+              >
+                <CloseIcon />
+              </button>
+            </li>
+          ))}
       </ul>
       <select
         className="rounded-lg border border-emerald-500 px-3 py-1 font-medium text-emerald-800 focus:outline-emerald-700"
         value={selectedTag}
-        onChange={handleChangeCategory}        
+        onChange={handleChangeCategory}
         name="tags"
         id="category"
       >
         <option value="">Seleccionar categoría</option>
         {tags.map((tag) => (
-          <option 
-          key={tag} 
-          value={tag}
-          disabled={checkToDisabled(tag)}
-          >
+          <option key={tag} value={tag} disabled={checkToDisabled(tag)}>
             {tag}
           </option>
         ))}

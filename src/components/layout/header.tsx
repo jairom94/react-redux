@@ -3,17 +3,23 @@ import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "r
 import logoMobile from "../../assets/header/logo.svg";
 import logoDesktop from "../../assets/header/logo-desktop.svg";
 import { SearchIcon } from "../icons/search-icon";
-import type { Tag } from "../../pages/adverts/types";
-import { getTags } from "../../pages/adverts/service";
+// import type { Tag } from "../../pages/adverts/types";
+// import { getTags } from "../../pages/adverts/service";
 import { Link, NavLink, useNavigate } from "react-router";
 import { PlusIcon } from "../icons/plus-icon";
 import { BurgerMenu } from "../icons/burger-icon";
 import DynamicIcon from "../icons/dynamic-icon";
 import { CloseIcon } from "../icons/close-icon";
 import AuthButtonDesktop from "../../pages/auth/auth-button-desktop";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { getTagsRedux } from "../../store/selectors";
+import { tagsLoaded } from "../../store/actions";
 
 const Header = () => {
-  const [tags, setTags] = useState<Tag[]>([]);
+  // const [tags, setTags] = useState<Tag[]>([]);
+  const tags = useAppSelector(getTagsRedux)
+  const dispatch = useAppDispatch()
+
   const [showmenu,setShowMenu] = useState(false);
   const [searchByCategory ,setSearchByCategory] = useState('');
   const navigate = useNavigate()
@@ -22,12 +28,13 @@ const Header = () => {
   // console.log(tags);
 
   useEffect(() => {
-    async function fillTags() {
-      const tags_ = await getTags();
-      setTags(tags_);
-    }
-    fillTags();
-  }, []);
+    // async function fillTags() {
+    //   const tags_ = await getTags();
+    //   setTags(tags_);
+    // }
+    // fillTags();
+    dispatch(tagsLoaded())
+  }, [dispatch]);
   useEffect(() => {
     const inter = setInterval(() => {
       if (tagsRef.current) {

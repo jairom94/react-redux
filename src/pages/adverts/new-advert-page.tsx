@@ -1,5 +1,4 @@
 import {
-  useEffect,
   useRef,
   useState,
   type ChangeEvent,
@@ -7,19 +6,20 @@ import {
 } from "react";
 // import RadioItem from "../../components/ui/radio-item";
 // import RadioGroup from "../../components/ui/radio-group";
-import type { Advert, Tag } from "./types";
+import type { Advert } from "./types";
 import FormField from "../../components/ui/form-field";
 import CheckGroup from "../../components/ui/check-group";
 import CheckItem from "../../components/ui/check-item";
 import ButtonCustom from "../../components/ui/button";
-import { getTags } from "./service";
+
 import PreviewImage from "./partials/preview-image";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router";
 import { useNotification } from "../../components/ui/notification/context";
 import SaleCheck from "../../components/ui/salecheck/salecheck";
-import { useAppDispatch } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { advertsCreated } from "../../store/actions";
+import { getTagsRedux } from "../../store/selectors";
 
 const NewAdvertPage = () => {
   const initialValueAdvert: Advert = {
@@ -40,15 +40,11 @@ const NewAdvertPage = () => {
   const dispatch = useAppDispatch()
 
   const { name, price,sale, tags, photo } = advert;
-  const [Tags, setTags] = useState<Tag[]>([]);
+  // const [Tags, setTags] = useState<Tag[]>([]);
+  const Tags = useAppSelector(getTagsRedux)
   const [ranNum, setRanNum] = useState(Math.random);
   const isDisabled =
-    !name || Number(price) === 0 || tags.length === 0;
-  useEffect(() => {
-    getTags()
-      .then((tags_) => setTags(tags_))
-      .catch((err) => alert(err));
-  }, []);
+    !name || Number(price) === 0 || tags.length === 0; 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const newAdvert: Advert = {
       ...advert,
@@ -56,21 +52,6 @@ const NewAdvertPage = () => {
     };
     setAdvert(newAdvert);
   }
-  // function handleChangeRadioGroup(nameSelected: string) {
-  //   if (nameSelected === "sale") {
-  //     setAdvert((prevAdvert) => ({
-  //       ...prevAdvert,
-  //       type: nameSelected,
-  //       sale: true,
-  //     }));
-  //   } else {
-  //     setAdvert((prevAdvert) => ({
-  //       ...prevAdvert,
-  //       type: nameSelected,
-  //       sale: false,
-  //     }));
-  //   }
-  // }
   function onSale(){
     setAdvert((prevAdvert) => ({
         ...prevAdvert,

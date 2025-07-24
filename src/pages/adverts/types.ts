@@ -27,7 +27,7 @@ export type AdvertResponse = Omit<AdvertSimple, 'photo'> & {
 export interface FilterByAdverts {
         name:string;
         type:string;
-        tags:string[]
+        tags:Tag[]
     }
 
 export interface RadioType {

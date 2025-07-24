@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { FilterByAdverts } from "./types";
+import type { FilterByAdverts, Tag } from "./types";
 import AdvertItem from "./partials/advert-item";
 // import { getAdverts } from "./service";
 import manage from "../../utils/manage";
@@ -12,6 +12,8 @@ import { getAdvertsRedux, getUi } from "../../store/selectors";
 import { advertsLoaded } from "../../store/actions";
 // import { AxiosError } from "axios";
 import { useNotification } from "../../components/ui/notification/context";
+// import { createPortal } from "react-dom";
+// import ModalUpdate from "./partials/modal-update";
 // import { getAdverts } from "./service";
 
 const AdvertsPage = () => {
@@ -30,6 +32,10 @@ const AdvertsPage = () => {
 
   const { error, pending } = useAppSelector(getUi);
 
+  // const refModalUpdate = useRef<HTMLDialogElement>(null);
+
+  // const { visible,htmlDialog,data } = useAppSelector(getModalShowed)
+
   useEffect(() => {
     dispatch(advertsLoaded(searchByCategory));
     if(error){
@@ -42,13 +48,16 @@ const AdvertsPage = () => {
     }
   }, [searchByCategory, dispatch,error]);
 
+  // useEffect(()=>{
+  //   if(visible && htmlDialog){
+  //     htmlDialog.showModal()
+  //   }
+  // },[visible])
+
   const advertsFilters = useMemo(() => {
     return manage.filterAdverts(adverts, filters);
   }, [adverts, filters]);
 
-  // function handleDeleteAdvert(advertId: string) {    
-  //   dispatch(advertsDeletedOne(advertId))    
-  // }
   function changeName(name: string) {
     setFilters((prevFilters) => ({
       ...prevFilters,
@@ -61,13 +70,13 @@ const AdvertsPage = () => {
       type,
     }));
   }
-  function addTagToFilters(tag: string) {
+  function addTagToFilters(tag: Tag) {
     setFilters((prevFilters) => ({
       ...prevFilters,
       tags: [...filters.tags, tag],
     }));
   }
-  function removeTagFromFIlters(tag: string) {
+  function removeTagFromFIlters(tag: Tag) {
     const temp = [...filters.tags.filter((t) => t !== tag)];
     setFilters((prevFilters) => ({
       ...prevFilters,
@@ -75,6 +84,8 @@ const AdvertsPage = () => {
     }));
   }
 
+  // console.log('render...');
+  
   return (
     <div className="m-[0_auto] w-full max-w-[90dvw] py-5 md:grid md:max-w-[100dvw] md:grid-cols-[minmax(350px,350px)_1fr]">
       {/* BreadCrumbs */}
@@ -87,7 +98,7 @@ const AdvertsPage = () => {
         filters={filters}
         onChangeName={changeName}
         onChangeTypeFilters={changeTypeFilters}
-        showByCategory={searchByCategory}
+        showByCategory={searchByCategory as Tag}
         addTagToFilters={addTagToFilters}
         removeTagFromFIlters={removeTagFromFIlters}
       />
@@ -144,10 +155,11 @@ const AdvertsPage = () => {
           <AdvertItem
             key={advert.id}
             advert={advert}
+            // modalToUpdate={refModalUpdate.current}
             // onDelete={handleDeleteAdvert}
           />
         ))}
-      </ul>
+      </ul>      
     </div>
   );
 };
