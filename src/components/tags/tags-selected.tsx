@@ -25,7 +25,7 @@ const TagsSelected = ({
         .catch(err => {
             if(err instanceof AxiosError){
                 addNoti({
-                    message:`${err.response?.data.message} - ${err.response?.data.statusCode}`,
+                    message: err.response?.data?.message ?? err.message ?? "",
                     type:'error',
                     id:crypto.randomUUID(),
                     createdAt: Date.now()

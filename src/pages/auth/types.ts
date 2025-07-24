@@ -3,13 +3,15 @@ export interface User {
   username: string;
   email: string;
   password: string;
+  [key: string]: string
 }
 
-export interface Login extends Omit<User, "name" | "username">{
-  remember:boolean;
-  [key: string]:string | boolean
-};
-
+export interface Login {
+  email: string;
+  password: string;
+  remember: boolean;  
+  [key: string]: string | boolean;
+}
 export type LoginClean = {  
   [P in keyof Omit<Login, 'remember'>]: string; 
 };

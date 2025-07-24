@@ -1,7 +1,5 @@
 export type Tag = 'lifestyle' | 'mobile' | 'motor' | 'work'
 
- 
-
 export interface Advert {
     id?:string;
     createdAt?:string;

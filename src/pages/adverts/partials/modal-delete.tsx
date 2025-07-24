@@ -3,10 +3,12 @@ import Modal from "./modal";
 import { DeleteIcon } from "../../../components/icons/delete-icon";
 import { CloseIcon } from "../../../components/icons/close-icon";
 import type { Advert } from "../types";
-import { deleteAdvert } from "../service";
+// import { deleteAdvert } from "../service";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router";
 import { useNotification } from "../../../components/ui/notification/context";
+import { useAppDispatch } from "../../../store";
+import { advertsDeletedOne } from "../../../store/actions";
 
 interface ModalDeleteProps extends ComponentProps<'dialog'> {
     advert:Advert;
@@ -15,13 +17,15 @@ interface ModalDeleteProps extends ComponentProps<'dialog'> {
 const ModalDelete = ({advert:{id,name},...props}:ModalDeleteProps) => { 
     const navigate = useNavigate()   
     const { addNoti } = useNotification()
+    const dispatch = useAppDispatch()
     function handleClickCloseModal(){
         const modalRef:RefObject<HTMLDialogElement> = props.ref as RefObject<HTMLDialogElement>
         modalRef.current.close()
     }
     async function handleClickAccept(){
         try {
-            await deleteAdvert(id as string)            
+            // await deleteAdvert(id as string)   
+            dispatch(advertsDeletedOne(id as string))             
             navigate('/adverts')
             addNoti({
               message:'Advert was deleted, successull',
@@ -32,7 +36,7 @@ const ModalDelete = ({advert:{id,name},...props}:ModalDeleteProps) => {
         } catch (error) {
             if(error instanceof AxiosError){
                 addNoti({
-                  message:error.message,
+                  message: error.response?.data?.message ?? error.message ?? "",
                   id:crypto.randomUUID(),
                   type:'error',
                   createdAt:Date.now()

@@ -1,45 +1,56 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
-import ButtonCustom from "../../components/ui/button";
-import FormField from "../../components/ui/form-field";
+import { useEffect, useRef } from "react";
+// import ButtonCustom from "../../components/ui/button";
+// import FormField from "../../components/ui/form-field";
 import { AxiosError } from "axios";
 import { LogIn, singUp } from "./service";
 import type { User } from "./types";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "./context";
+import { createFormFactory } from "../../components/forms/FormFactory";
+import { useNotification } from "../../components/ui/notification/context";
+import { useUserInformation } from "./me/context";
 
 const SignPage = () => {
-  const [user, setUser] = useState<User>({
+  const credentialsUser = useRef<User>({
     name: "",
     username: "",
     email: "",
     password: "",
-  });
-  const { name, username, email, password } = user;
-  const isDisabled = !name || !username || !email || !password;
+  })
+  const { Form, Input } = createFormFactory<User>()
+  const { addNoti } = useNotification();  
+  const { onUserLogged } = useUserInformation();
 
-  const { isLogged } = useAuth()
+  const { isLogged,onLogin } = useAuth()
   const navigate = useNavigate();
   useEffect(()=>{
     if (isLogged) {
       navigate("/", { replace: true });
     }
-  },[])
-  function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    setUser((prevUser) => ({
-      ...prevUser,
-      [e.target.name]: e.target.value,
-    }));
-  }
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  },[])  
+
+  async function handleSubmitForm(values:User) {
     try {
-      const { email } = await singUp(user);
-      await LogIn({ email, password }, true);
-      // console.log(newUser);
+      await singUp(values);
+      const { email, password } = values
+      await LogIn({ email,password,remember:true });      
+      onLogin();
+      onUserLogged();
+      navigate("/", { replace: true });
+      addNoti({
+        message: "Singup success, ¡Welcome!",
+        id: crypto.randomUUID(),
+        type: "success",
+        createdAt: Date.now(),
+      });
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log(error);
-        alert(error);
+        addNoti({
+          message: error.response?.data?.message ?? error.message ?? "",
+          type: "error",
+          id: crypto.randomUUID(),
+          createdAt: Date.now(),
+        });
       }
     }
   }
@@ -49,7 +60,19 @@ const SignPage = () => {
         
         <h3 
         className="text-2xl font-medium text-gray-800">Formulario de registro</h3>
-        <form
+        <Form 
+        className="flex flex-col gap-2"
+        initialValue={credentialsUser.current} 
+        onSubmit={handleSubmitForm}>
+          <Input name="name" type="text" label="Nombres" />
+          <Input name="username" type="text" label="Nombre de usuario" />
+          <Input name="email" type="email" label="E-mail" />
+          <Input name="password" type="password" label="Contraseña" />
+          <Input name="enviar" type="submit" 
+          className="bg-emerald-600 hover:bg-emerald-500 transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+          />
+        </Form>
+        {/* <form
           onSubmit={handleSubmit}
           className="flex flex-col justify-center gap-3"
         >
@@ -91,7 +114,7 @@ const SignPage = () => {
           >
             Registrar
           </ButtonCustom>
-        </form>
+        </form> */}
         <div className="flex justify-center">
           <p className="font-light text-gray-700">
             ¿Ya tienes una cuenta?{" "}

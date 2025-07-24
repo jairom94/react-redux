@@ -94,7 +94,7 @@ const ModalUpdate = ({ advert, ...props }: ModalUpdateProps) => {
     } catch (error) {
       if (error instanceof AxiosError) {
         addNoti({
-          message: error.message,
+          message: error.response?.data?.message ?? error.message ?? "",
           id: crypto.randomUUID(),
           type: "error",
           createdAt: Date.now(),

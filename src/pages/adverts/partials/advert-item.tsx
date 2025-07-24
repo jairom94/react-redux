@@ -2,35 +2,35 @@
 import type { Advert } from "../types";
 // import Modal from './modal';
 import { useRef, type MouseEvent } from "react";
-import Modal from "./modal";
-import { CloseIcon } from "../../../components/icons/close-icon";
-import { DeleteIcon } from "../../../components/icons/delete-icon";
-import { deleteAdvert } from "../service";
+// import Modal from "./modal";
+// import { CloseIcon } from "../../../components/icons/close-icon";
+// import { DeleteIcon } from "../../../components/icons/delete-icon";
+// import { deleteAdvert } from "../service";
 import { createPortal } from "react-dom";
 import { Link } from "react-router";
 import photoPlaceholder from '../../../assets/placeholder_image.png';
-import { useNotification } from "../../../components/ui/notification/context";
-import { AxiosError } from "axios";
+// import { useNotification } from "../../../components/ui/notification/context";
+// import { AxiosError } from "axios";
 import ModalUpdate from "./modal-update";
+import ModalDelete from "./modal-delete";
 
 
 interface AdvertItemProps {
   advert:Advert;
-  onDelete:(advertId:string)=>void;
+  // onDelete:(advertId:string)=>void;
 }
-const AdvertItem = ({advert:{name,id,photo,price,tags,sale},onDelete}: AdvertItemProps) => {
+const AdvertItem = ({advert:{name,id,photo,price,tags,sale}}: AdvertItemProps) => {
   const refModal = useRef<HTMLDialogElement>(null);  
   const refModalUpdate = useRef<HTMLDialogElement>(null);
 
   const photoClear = photo ? photo as string : photoPlaceholder  
   
-  const { addNoti } = useNotification()
+  // const { addNoti } = useNotification()
 
   function handleClickShowModal(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     e.stopPropagation();
-    if (refModal.current) {
-      // console.log(refModal.current);
+    if (refModal.current) {      
       refModal.current.showModal();
     }
   }
@@ -38,42 +38,41 @@ const AdvertItem = ({advert:{name,id,photo,price,tags,sale},onDelete}: AdvertIte
   function handleClickShowModalUpdate(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     e.stopPropagation();
-    if (refModalUpdate.current) {
-      // console.log(refModal.current);
+    if (refModalUpdate.current) {      
       refModalUpdate.current.showModal();
     }
   }
 
-  function handleClickCloseModal(e: MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    e.stopPropagation();
-    refModal.current?.close();
-  }
-  async function handleClickAccept(e: MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    e.stopPropagation();
-    try {
-      await deleteAdvert(id as string);
-      onDelete(id as string);
-      addNoti({
-        message:'Advert was deleted, successfull',
-        id:crypto.randomUUID(),
-        type:'success',
-        createdAt:Date.now()
-      })
-    } catch (error) {
-      if(error instanceof AxiosError){
-        addNoti({
-          message:error.message,
-          id:crypto.randomUUID(),
-          type:'error',
-          createdAt:Date.now()
-        })
-      }
-    }
+  // function handleClickCloseModal(e: MouseEvent<HTMLButtonElement>) {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   refModal.current?.close();
+  // }
+  // async function handleClickAccept(e: MouseEvent<HTMLButtonElement>) {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   try {
+  //     // await deleteAdvert(id as string);
+  //     onDelete(id as string);
+  //     addNoti({
+  //       message:'Advert was deleted, successfull',
+  //       id:crypto.randomUUID(),
+  //       type:'success',
+  //       createdAt:Date.now()
+  //     })
+  //   } catch (error) {
+  //     if(error instanceof AxiosError){
+  //       addNoti({
+  //         message: error.response?.data?.message ?? error.message ?? "",
+  //         id:crypto.randomUUID(),
+  //         type:'error',
+  //         createdAt:Date.now()
+  //       })
+  //     }
+  //   }
 
-    refModal.current?.close();
-  }
+  //   refModal.current?.close();
+  // }
   return (
     <>
       <li className={`transition-all duration-300 hover:scale-[1.01] group`}>
@@ -126,7 +125,7 @@ const AdvertItem = ({advert:{name,id,photo,price,tags,sale},onDelete}: AdvertIte
           </div>
         </Link>
       </li>
-      {createPortal(<Modal ref={refModal}>
+      {/* {createPortal(<Modal ref={refModal}>
         <div className="">
           <header className="relative bg-sky-700 py-4">
             <div className="flex items-center gap-2 px-3 select-none">
@@ -166,7 +165,12 @@ const AdvertItem = ({advert:{name,id,photo,price,tags,sale},onDelete}: AdvertIte
             </div>
           </div>
         </div>
-      </Modal>,document.body)}
+      </Modal>,document.body)} */}
+      {
+        createPortal(<ModalDelete ref={refModal} advert={{name,id,photo,price,tags,sale}} />,
+          document.body
+        )
+      }
       {
         createPortal(
         <ModalUpdate advert={{name,id,photo,price,tags,sale} as Advert} ref={refModalUpdate} />,

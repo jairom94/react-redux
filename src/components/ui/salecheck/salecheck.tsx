@@ -6,6 +6,9 @@ interface SaleCheckProps {
 const SaleCheck = ({ sale,onChangeSale,onChangeBuy }: SaleCheckProps) => {    
   return (
     <div>
+      <div className="pb-2">
+        <label>Tipo de anuncio</label>
+      </div>
       <div>
         <input
           type="radio" 

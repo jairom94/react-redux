@@ -37,33 +37,30 @@ const LoginPage = () => {
   }, [isLogged, navigate]);  
   const { Form, Input } = createFormFactory<Login>();  
 
-  async function handleLogin(values:Login){
-    // (values) => console.log(values)
-    try {
-      //   setIsLogin(true);
+  async function handleLogin(values:Login){    
+    try {      
       setIsLoading(true);
-      // await LogIn({ email, password }, rememberMe);
       await LogIn(values)
       onLogin();
       onUserLogged();
+      const to = location.state?.from ?? "/";
+      navigate(to, { replace: true });
       addNoti({
         message: "Login success",
         id: crypto.randomUUID(),
         type: "success",
         createdAt: Date.now(),
-      });
-      const to = location.state?.from ?? "/";
-      navigate(to, { replace: true });
+      });      
     } catch (error) {
       if (error instanceof AxiosError) {
+        // console.log(error);        
         addNoti({
-          message: `${error.response?.data.message} - ${error.response?.data.statusCode}`,
+          message: error.response?.data?.message ?? error.message ?? "",
           type: "error",
           id: crypto.randomUUID(),
           createdAt: Date.now(),
         });
-        credentials.current = {...values}
-        // alert(error);
+        credentials.current = {...values}        
       }
     } finally {
       setIsLoading(false);

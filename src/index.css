@@ -21,6 +21,11 @@
       opacity: 1;
     }
   }
+  @keyframes shimmer {
+    to {
+      background-position: -100% 0;
+    }
+  }
 }
 
 
@@ -47,4 +52,16 @@
   @apply absolute bg-red-600 text-gray-50 px-2 rounded-full
             text-xs py-1 -right-1 -top-1 hover:bg-red-500 cursor-pointer
             transition-colors duration-300 font-medium;
+}
+
+.card-skeleton {
+  background-image: linear-gradient(
+		90deg,
+		#ccc 0px,
+		rgb(229 229 229 / 90%) 40px,
+		#ccc 80px
+	);
+  background-size: 300%;
+  background-position: 100% 0;  
+  animation: shimmer 1.5s infinite;
 }

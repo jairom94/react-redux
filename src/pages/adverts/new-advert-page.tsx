@@ -5,24 +5,27 @@ import {
   type ChangeEvent,
   type FormEvent,
 } from "react";
-import RadioItem from "../../components/ui/radio-item";
-import RadioGroup from "../../components/ui/radio-group";
+// import RadioItem from "../../components/ui/radio-item";
+// import RadioGroup from "../../components/ui/radio-group";
 import type { Advert, Tag } from "./types";
 import FormField from "../../components/ui/form-field";
 import CheckGroup from "../../components/ui/check-group";
 import CheckItem from "../../components/ui/check-item";
 import ButtonCustom from "../../components/ui/button";
-import { createAdvert, getTags } from "./service";
+import { getTags } from "./service";
 import PreviewImage from "./partials/preview-image";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router";
 import { useNotification } from "../../components/ui/notification/context";
+import SaleCheck from "../../components/ui/salecheck/salecheck";
+import { useAppDispatch } from "../../store";
+import { advertsCreated } from "../../store/actions";
 
 const NewAdvertPage = () => {
   const initialValueAdvert: Advert = {
     name: "",
-    type: "",
     price: 0,
+    sale:true,
     photo: "",
     tags: [],
   };
@@ -34,11 +37,13 @@ const NewAdvertPage = () => {
 
   const { addNoti } = useNotification()
 
-  const { name, type, price, tags, photo } = advert;
+  const dispatch = useAppDispatch()
+
+  const { name, price,sale, tags, photo } = advert;
   const [Tags, setTags] = useState<Tag[]>([]);
   const [ranNum, setRanNum] = useState(Math.random);
   const isDisabled =
-    !name || !type || Number(price) === 0 || tags.length === 0;
+    !name || Number(price) === 0 || tags.length === 0;
   useEffect(() => {
     getTags()
       .then((tags_) => setTags(tags_))
@@ -51,20 +56,32 @@ const NewAdvertPage = () => {
     };
     setAdvert(newAdvert);
   }
-  function handleChangeRadioGroup(nameSelected: string) {
-    if (nameSelected === "sale") {
-      setAdvert((prevAdvert) => ({
+  // function handleChangeRadioGroup(nameSelected: string) {
+  //   if (nameSelected === "sale") {
+  //     setAdvert((prevAdvert) => ({
+  //       ...prevAdvert,
+  //       type: nameSelected,
+  //       sale: true,
+  //     }));
+  //   } else {
+  //     setAdvert((prevAdvert) => ({
+  //       ...prevAdvert,
+  //       type: nameSelected,
+  //       sale: false,
+  //     }));
+  //   }
+  // }
+  function onSale(){
+    setAdvert((prevAdvert) => ({
         ...prevAdvert,
-        type: nameSelected,
-        sale: true,
+        sale:true
       }));
-    } else {
-      setAdvert((prevAdvert) => ({
+  }
+  function onBuy(){
+    setAdvert((prevAdvert) => ({
         ...prevAdvert,
-        type: nameSelected,
-        sale: false,
+        sale:false
       }));
-    }
   }
   function handleChangeFile(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
@@ -109,12 +126,14 @@ const NewAdvertPage = () => {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     try {
       e.preventDefault();
+      // console.log(advert);
+      // return
       const newAdvert:Advert = Object.entries(advert).reduce((acc,[key,value])=>{
-        if(key === 'type' || (key === 'photo' && !value))return acc                
+        if((key === 'photo' && !value))return acc                
         acc[key] = value
         return acc
       },{} as Advert)
-      const advertCreated = await createAdvert(newAdvert);      
+      const advertCreated = await dispatch(advertsCreated(newAdvert))
       setAdvert(initialValueAdvert);
       setRanNum(Math.random);
       addNoti({
@@ -127,13 +146,16 @@ const NewAdvertPage = () => {
       navigate(`/adverts/${advertCreated.id}`,{replace:true})
     } catch (error) {
       if(error instanceof AxiosError){
-        alert(`Error: ${error.message}`)
+        addNoti({
+          message: error.response?.data?.message ?? error.message ?? "",
+          type: "error",
+          id: crypto.randomUUID(),
+          createdAt: Date.now(),
+        });
       }
     }
   }
-  // const cont = useRef(0)
-  // cont.current+=1
-  //   console.log(cont.current);
+  
   return (
     <div
       className={`mx-auto my-0 flex max-w-[80dvw] flex-1 flex-col items-center justify-center pb-7 pt-5 md:mx-auto md:my-0 md:max-w-[500px]`}
@@ -147,14 +169,19 @@ const NewAdvertPage = () => {
           id="name"
           label="Nombre"
         />
-        <RadioGroup
+        {/* <RadioGroup
           newKey={ranNum}
           name="type"
           onChange={handleChangeRadioGroup}
         >
           <RadioItem label="Compra" value="buy" id="compra" />
           <RadioItem label="Venta" value="sale" id="venta" />
-        </RadioGroup>
+        </RadioGroup> */}
+        <SaleCheck 
+          sale={sale as boolean} 
+          onChangeSale={onSale} 
+          onChangeBuy={onBuy} 
+          />
         <FormField
           type="number"
           name="price"
