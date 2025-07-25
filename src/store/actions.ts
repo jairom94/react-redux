@@ -3,6 +3,21 @@ import type { AppThunk } from ".";
 import { createAdvert, deleteAdvert, detailAdvert, getAdverts, getTags } from "../pages/adverts/service";
 import type { Advert, Tag } from "../pages/adverts/types";
 import type { Modal } from "../pages/adverts/partials/types";
+import type { Login } from "../pages/auth/types";
+import { LogIn } from "../pages/auth/service";
+
+
+//LOGIN PAGE
+type AuthLoginPending = {
+    type:'auth/login/pending';
+}
+type AuthLoginReject = {
+    type:'auth/login/reject';
+    payload:Error;
+}
+type AuthLoginFullFilled = {
+    type:'auth/login/fullfilled';
+}
 
 //LOADED ADVERTS
 type AdvertsLoadedPending = {
@@ -46,6 +61,20 @@ type AdvertsCreatedFullFilled = {
     payload:Advert;
 }
 
+//LOADED ADVERT
+type AdvertLoadedPending = {
+    type:'advert/loaded/pending',
+    payload:null    
+}
+type AdvertLoadedRejected = {
+    type:'advert/loaded/rejected',
+    payload:Error;
+}
+type AdvertLoadedFullFilled = {
+    type:'advert/loaded/fullfilled',
+    payload:Advert;
+}
+
 //LOADED TAGS
 type TagsLoadedPending = {
     type:'tags/loaded/pending',
@@ -70,6 +99,21 @@ type ModalCloseFullFilled = {
     type:'modal/close/fullfilled',
     // payload:Modal<Advert>;
 }
+
+
+//LOGIN PAGE
+export const authLoginPending = ():AuthLoginPending => ({
+    type:"auth/login/pending"
+})
+
+export const authLoginRejected = (error:Error):AuthLoginReject => ({
+    type:"auth/login/reject",
+    payload:error
+})
+
+export const authLoginFullFilled = ():AuthLoginFullFilled => ({
+    type:"auth/login/fullfilled"
+})
 
 //MODAL
 export const modalShowFullFilled = (modal:Modal<Advert>):ModalShowFullFilled => {
@@ -132,6 +176,21 @@ export const advertsCreatedFullFilled = (advert:Advert):AdvertsCreatedFullFilled
     type:"adverts/created/fullfilled",
     payload:advert
 })
+
+//ADVERT LOADED
+export const advertLoadedPending = ():AdvertLoadedPending => ({
+    type: "advert/loaded/pending",
+    payload:null
+})
+export const advertLoadedRejected = (error:Error):AdvertLoadedRejected => ({
+    type:"advert/loaded/rejected",
+    payload:error
+})
+export const advertLoadedFullFilled = (advert:Advert):AdvertLoadedFullFilled => ({
+    type:"advert/loaded/fullfilled",
+    payload:advert
+})
+
 type UiResetError = {
   type: "ui/reset-error";
 };
@@ -149,6 +208,41 @@ export const tagsLoadedFullFilled = (tags:Tag[]):TagsLoadedFullFilled => ({
     type:"tags/loaded/fullfilled",
     payload:tags
 })
+
+
+//LOGIN ACTION
+export function authLogin(credentials:Login):AppThunk<Promise<void>> {
+    return async function (dispatch) {
+        dispatch(authLoginPending())
+        try {
+            await LogIn(credentials)
+            dispatch(authLoginFullFilled())
+        } catch (error) {
+            if(error instanceof Error) {
+                dispatch(authLoginRejected(error))
+            }
+            throw error
+        }
+    }
+}
+
+//LOADED ADVERT DETAIL ACTION
+export function advertLoaded(advertId:string):AppThunk<Advert|null>{
+    return function (dispatch,getState) {
+        dispatch(advertLoadedPending())
+        try {
+            const advert = getState().adverts?.find(a => a.id === advertId) ?? null
+            dispatch(advertLoadedFullFilled(advert!))
+            return advert
+        } catch (error) {
+            if(error instanceof AxiosError){
+                dispatch(advertLoadedRejected(error))
+            }
+            throw error
+        }
+    }
+}
+
 
 //LOADED TAGS ACTION
 export function tagsLoaded():AppThunk<Promise<void>>{
@@ -224,18 +318,24 @@ export const uiResetError = ():UiResetError => ({
 })
 
 export type Actions = 
-| AdvertsLoadedPending
+| AuthLoginPending //Auth Login
+| AuthLoginReject
+| AuthLoginFullFilled 
+| AdvertsLoadedPending //Adverts Loaded
 | AdvertsLoadedRejected
-| AdvertsLoadedFullFilled
-| AdvertsCreatedPending
+| AdvertsLoadedFullFilled 
+| AdvertsCreatedPending //Adverts Created
 | AdvertsCreatedRejected
 | AdvertsCreatedFullFilled
-| AdvertsDeletedPending
+| AdvertsDeletedPending //Adverts Deleted
 | AdvertsDeletedRejected
 | AdvertsDeletedFullFilled
-| TagsLoadedPending
+| TagsLoadedPending //Tags Loaded
 | TagsLoadedRejected
 | TagsLoadedFullFilled
-| ModalShowFullFilled
+| ModalShowFullFilled //Modal
 | ModalCloseFullFilled
-| UiResetError
+| AdvertLoadedPending //Advert
+| AdvertLoadedRejected
+| AdvertLoadedFullFilled
+| UiResetError //Ui

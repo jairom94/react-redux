@@ -2,13 +2,16 @@ import { useEffect, useRef } from "react";
 // import ButtonCustom from "../../components/ui/button";
 // import FormField from "../../components/ui/form-field";
 import { AxiosError } from "axios";
-import { LogIn, singUp } from "./service";
+import { singUp } from "./service";
 import type { User } from "./types";
 import { Link, useNavigate } from "react-router";
-import { useAuth } from "./context";
+// import { useAuth } from "./context";
 import { createFormFactory } from "../../components/forms/FormFactory";
 import { useNotification } from "../../components/ui/notification/context";
 import { useUserInformation } from "./me/context";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { getAuth } from "../../store/selectors";
+import { authLogin } from "../../store/actions";
 
 const SignPage = () => {
   const credentialsUser = useRef<User>({
@@ -21,7 +24,9 @@ const SignPage = () => {
   const { addNoti } = useNotification();  
   const { onUserLogged } = useUserInformation();
 
-  const { isLogged,onLogin } = useAuth()
+  // const { isLogged,onLogin } = useAuth()
+  const isLogged = useAppSelector(getAuth)
+  const dispatch = useAppDispatch()
   const navigate = useNavigate();
   useEffect(()=>{
     if (isLogged) {
@@ -33,8 +38,9 @@ const SignPage = () => {
     try {
       await singUp(values);
       const { email, password } = values
-      await LogIn({ email,password,remember:true });      
-      onLogin();
+      dispatch(authLogin({ email,password,remember:true }))
+      // await LogIn({ email,password,remember:true });      
+      // onLogin();
       onUserLogged();
       navigate("/", { replace: true });
       addNoti({

@@ -1,15 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Link, useParams } from "react-router";
-import { detailAdvert } from "./service";
-import type { Advert } from "./types";
+// import { detailAdvert } from "./service";
+// import type { Advert } from "./types";
 import imagePlaceholder from "../../assets/placeholder_image.png";
 import { DeliveryIcon } from "../../components/icons/delivery-icon";
 import { DeleteIcon } from "../../components/icons/delete-icon";
 import ModalDelete from "./partials/modal-delete";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { getAdvertRedux } from "../../store/selectors";
+import { advertLoaded } from "../../store/actions";
 
 const AdvertPage = () => {
   const { advertId } = useParams();
-  const [advert, setAdverts] = useState<Advert | null>(null);
+  // const [advert, setAdverts] = useState<Advert | null>(null);
+  const advert = useAppSelector(getAdvertRedux)
+  const dispatch = useAppDispatch()
   const modalDeleteRef = useRef<HTMLDialogElement>(null)
 
   const photoClear = advert?.photo
@@ -17,9 +22,10 @@ const AdvertPage = () => {
     : imagePlaceholder;
   useEffect(() => {
     if (advertId) {
-      detailAdvert(advertId).then((data) => setAdverts(data));
+      dispatch(advertLoaded(advertId))
+      // detailAdvert(advertId).then((data) => setAdverts(data));
     }
-  }, [advertId]);
+  }, [advertId,dispatch]);
   function handleShowModal(){
     const modal = modalDeleteRef.current
     if(modal){

@@ -5,13 +5,16 @@ import type { Login } from "./types";
 import { AxiosError } from "axios";
 import { LogIn } from "./service";
 import LoginLoader from "../../components/ui/login-loader";
-import { useAuth } from "./context";
+// import { useAuth } from "./context";
 import { useLocation, useNavigate } from "react-router";
 import { useUserInformation } from "./me/context";
 // import useNotifications from "../../components/ui/notification/useNotifications";
 // import Notfications from "../../components/ui/notification/notifications";
 import { useNotification } from "../../components/ui/notification/context";
 import { createFormFactory } from "../../components/forms/FormFactory";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { getAuth } from "../../store/selectors";
+import { authLogin } from "../../store/actions";
 
 
 const LoginPage = () => {
@@ -21,7 +24,9 @@ const LoginPage = () => {
     password: "",
     remember:false
   })
-  const { isLogged, onLogin } = useAuth();
+  // const { isLogged, onLogin } = useAuth();
+  const isLogged = useAppSelector(getAuth)
+  const dispatch = useAppDispatch()
   const { onUserLogged } = useUserInformation();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,7 +46,8 @@ const LoginPage = () => {
     try {      
       setIsLoading(true);
       await LogIn(values)
-      onLogin();
+      // onLogin();
+      await dispatch(authLogin(values))
       onUserLogged();
       const to = location.state?.from ?? "/";
       navigate(to, { replace: true });
