@@ -108,9 +108,9 @@ export function ui(state=defaultState.ui,action:Actions):State["ui"]{
 export function modal(state= defaultState.modal,action:Actions):State['modal']{
     switch (action.type) {
         case "modal/show/fullfilled": {
-            const { data,type } = action.payload
+            const { data,type,visible } = action.payload
             const response:Modal<Advert> = {
-                data,type,visible:true
+                data,type,visible
             }
             return response
         }

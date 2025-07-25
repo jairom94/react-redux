@@ -7,16 +7,17 @@ import ModalUpdate from "../../pages/adverts/partials/modal-update";
 import { getModalShowed } from "../../store/selectors";
 import { useAppSelector } from "../../store";
 import { useEffect, useRef } from "react";
+import ModalDelete from "../../pages/adverts/partials/modal-delete";
 
 const Layout = () => {
-  const { data,visible } = useAppSelector(getModalShowed)
-  const refModalUpdate = useRef<HTMLDialogElement>(null)
+  const { data,visible,type } = useAppSelector(getModalShowed)
+  const refModal = useRef<HTMLDialogElement>(null)
   useEffect(()=>{
     if(visible){
-      refModalUpdate.current?.showModal()
+      refModal.current?.showModal()
     }
   },[visible])
-  console.log(data);
+  // console.log(data);
   
   return (
     <div className="flex flex-col min-h-dvh">      
@@ -27,9 +28,13 @@ const Layout = () => {
           </ErrorBoundary>
         </main>
         <Footer />
-        { data && createPortal(
-        <ModalUpdate advert={data} ref={refModalUpdate} />,
-        document.body) }      
+        { type === 'update' && data && createPortal(
+        <ModalUpdate advert={data} ref={refModal} />,
+        document.body) }   
+        { type === 'delete' &&  data && createPortal(
+          <ModalDelete advert={data} ref={refModal} />,
+          document.body)        
+        }   
     </div>
   );
 };

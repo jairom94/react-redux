@@ -90,6 +90,7 @@ const ModalUpdate = ({advert,...props}:ModalUpdateProps) => {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     try {
+      dispatch(modalCloseFullFilled())
         // const advertToUpdate:AdvertSimple = {
         //   name:advert.name,
         //   sale:advert.sale as boolean,

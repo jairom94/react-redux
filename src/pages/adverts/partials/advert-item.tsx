@@ -1,18 +1,18 @@
 // import { Link } from 'react-router';
 import type { Advert } from "../types";
 // import Modal from './modal';
-import { useRef, type MouseEvent } from "react";
+import { type MouseEvent } from "react";
 // import Modal from "./modal";
 // import { CloseIcon } from "../../../components/icons/close-icon";
 // import { DeleteIcon } from "../../../components/icons/delete-icon";
 // import { deleteAdvert } from "../service";
-import { createPortal } from "react-dom";
+// import { createPortal } from "react-dom";
 import { Link } from "react-router";
 import photoPlaceholder from '../../../assets/placeholder_image.png';
 // import { useNotification } from "../../../components/ui/notification/context";
 // import { AxiosError } from "axios";
 // import ModalUpdate from "./modal-update";
-import ModalDelete from "./modal-delete";
+// import ModalDelete from "./modal-delete";
 import { useAppDispatch } from "../../../store";
 import { modalShowFullFilled } from "../../../store/actions";
 import type { Modal } from "./types";
@@ -25,7 +25,7 @@ interface AdvertItemProps {
   // onDelete:(advertId:string)=>void;
 }
 const AdvertItem = ({advert:{name,id,photo,price,tags,sale}}: AdvertItemProps) => {
-  const refModal = useRef<HTMLDialogElement>(null);  
+  // const refModal = useRef<HTMLDialogElement>(null);  
   // const refModalUpdate = useRef<HTMLDialogElement>(null);
 
   const photoClear = photo ? photo as string : photoPlaceholder 
@@ -38,9 +38,16 @@ const AdvertItem = ({advert:{name,id,photo,price,tags,sale}}: AdvertItemProps) =
   function handleClickShowModal(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     e.stopPropagation();
-    if (refModal.current) {      
-      refModal.current.showModal();
+    const advertToDelete:Advert = {name,id,photo,price,tags,sale}
+    const modal:Modal<Advert> = {
+      data:advertToDelete,
+      type:'delete',
+      visible:true
     }
+    dispatch(modalShowFullFilled(modal))
+    // if (refModal.current) {      
+    //   refModal.current.showModal();
+    // }
   }
 
   function handleClickShowModalUpdate(e: MouseEvent<HTMLButtonElement>) {
@@ -183,11 +190,11 @@ const AdvertItem = ({advert:{name,id,photo,price,tags,sale}}: AdvertItemProps) =
           </div>
         </div>
       </Modal>,document.body)} */}
-      {
+      {/* {
         createPortal(<ModalDelete ref={refModal} advert={{name,id,photo,price,tags,sale}} />,
           document.body
         )
-      }
+      } */}
       {/* {
         createPortal(
         <ModalUpdate advert={{name,id,photo,price,tags,sale} as Advert} ref={refModalUpdate} />,
