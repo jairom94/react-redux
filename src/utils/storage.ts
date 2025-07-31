@@ -1,4 +1,4 @@
-type StorageKey = "auth";
+type StorageKey = "auth" | "me";
 
 export default {
   get(key: StorageKey) {
@@ -13,4 +13,5 @@ export default {
   clear() {
     localStorage.clear();
   },
+  
 };

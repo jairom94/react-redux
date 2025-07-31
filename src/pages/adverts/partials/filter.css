@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+.rc-slider-rail {
+  @apply bg-emerald-200 h-2 rounded;  
+}
+
+.rc-slider-track {
+  @apply bg-emerald-500 h-2 rounded;
+}
+
+.rc-slider-handle {
+  @apply w-4 h-4 bg-emerald-900 border-2 border-emerald-500 rounded-full shadow;
+  &:hover {
+    @apply border-emerald-300;
+  }
+  /* &:focus {
+    @apply bg-emerald-500 shadow-[0px_0px_0px_4px] shadow-emerald-950;    
+  } */
+}
+
+/* .rc-slider-handle-1 {
+    @apply bg-amber-200;
+}
+
+.rc-slider-handle-dragging {
+    @apply bg-amber-200;
+} */

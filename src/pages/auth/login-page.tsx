@@ -7,27 +7,26 @@ import { LogIn } from "./service";
 import LoginLoader from "../../components/ui/login-loader";
 // import { useAuth } from "./context";
 import { useLocation, useNavigate } from "react-router";
-import { useUserInformation } from "./me/context";
+// import { useUserInformation } from "./me/context";
 // import useNotifications from "../../components/ui/notification/useNotifications";
 // import Notfications from "../../components/ui/notification/notifications";
 import { useNotification } from "../../components/ui/notification/context";
 import { createFormFactory } from "../../components/forms/FormFactory";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { getAuth } from "../../store/selectors";
-import { authLogin } from "../../store/actions";
+import { authLogin, sessionLoaded } from "../../store/actions";
 
 
-const LoginPage = () => {
-  // const [credentials, setCredentials] = useState<Login>();
+const LoginPage = () => {  
   const credentials =  useRef<Login>({
     email: "",
     password: "",
     remember:false
   })
-  // const { isLogged, onLogin } = useAuth();
+
   const isLogged = useAppSelector(getAuth)
   const dispatch = useAppDispatch()
-  const { onUserLogged } = useUserInformation();
+  // const { onUserLogged } = useUserInformation();
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -48,7 +47,8 @@ const LoginPage = () => {
       await LogIn(values)
       // onLogin();
       await dispatch(authLogin(values))
-      onUserLogged();
+      await dispatch(sessionLoaded())
+      // onUserLogged();
       const to = location.state?.from ?? "/";
       navigate(to, { replace: true });
       addNoti({
@@ -82,8 +82,8 @@ const LoginPage = () => {
       {isLogged ? (
         <LoginLoader />
       ) : (
-        <div className="flex min-h-dvh items-center justify-center bg-gray-800">
-          <div className="md:container-md container flex flex-col gap-3 rounded-lg bg-white px-5 py-8">
+        <div className="min-h-dvh flex justify-center items-center bg-gray-800">
+          <div className="flex flex-col gap-3 rounded-lg bg-white px-6 py-8">
            <h3 className="text-2xl font-medium text-gray-800">
               Formulario de inicio de sesión
           </h3>

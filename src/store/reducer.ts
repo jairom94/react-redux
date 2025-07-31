@@ -1,12 +1,16 @@
 import type { Modal } from "../pages/adverts/partials/types";
-import type { Advert, Tag } from "../pages/adverts/types";
-import type { Actions } from "./actions";
+import type { Advert, FilterByAdverts, Tag } from "../pages/adverts/types";
+// import type { UserResponse } from "../pages/auth/types";
+import type { Actions } from './actions';
 
 export type State = {
   auth: boolean;
-  advertSelected:Advert | null;
-  adverts: Advert[] | null;
-  tags: Tag[] | null;
+  session:string;
+  advertSelected: Advert | null;
+  adverts: Advert[];
+  tags: Tag[];
+  filters:FilterByAdverts
+
   ui: {
     pending: boolean;
     error: Error | null;
@@ -16,9 +20,17 @@ export type State = {
 
 const defaultState: State = {
   auth: false,
-  advertSelected:null,
-  adverts: null,
-  tags: null,
+  session:'',
+  advertSelected: null,
+  adverts: [],
+  tags: [],
+  filters:{
+    name:'',
+    // sale:null,
+    tags:[],
+    price:[0,0],
+    range:[0,0]
+  },
   ui: {
     pending: false,
     error: null,
@@ -30,19 +42,39 @@ const defaultState: State = {
   },
 };
 
-export function auth(state=defaultState.auth,action:Actions):State['auth']{
-    switch (action.type) {
-        case "auth/login/pending":
-            return false
-        case "auth/login/reject":
-            return false
-        case "auth/login/fullfilled":
-            return true
-        default:
-            return state
-    }
+export function auth(
+  state = defaultState.auth,
+  action: Actions,
+): State["auth"] {
+  switch (action.type) {
+    case "auth/login/pending":
+      return false;
+    case "auth/login/reject":
+      return false;
+    case "auth/login/fulfilled":
+      return true;
+    case "auth/logout/rejected":
+      return false;
+    case "auth/logout/fulfilled":
+      return false;
+    default:
+      return state;
+  }
 }
 
+export function session(state=defaultState.session,action:Actions):State['session'] {
+  switch (action.type) {
+    //LOADED
+    case "session/loaded/fulfilled":
+      return action.payload
+    case "session/loaded/rejected":
+      return ''
+    case "session/closed/fulfilled":
+      return ''
+    default:
+      return state
+  }
+}
 
 export function tags(
   state = defaultState.tags,
@@ -51,10 +83,10 @@ export function tags(
   switch (action.type) {
     //LOADED
     case "tags/loaded/pending":
-      return null;
+      return [];
     case "tags/loaded/rejected":
-      return null;
-    case "tags/loaded/fullfilled":
+      return [];
+    case "tags/loaded/fulfilled":
       return action.payload;
     default:
       return state;
@@ -68,24 +100,24 @@ export function adverts(
   switch (action.type) {
     //LOADED
     case "adverts/loaded/pending":
-      return null;
+      return [];
     case "adverts/loaded/rejected":
-      return null;
-    case "adverts/loaded/fullfilled":
+      return [];
+    case "adverts/loaded/fulfilled":
       return action.payload;
     //CREATED
     case "adverts/created/pending":
       return state;
     case "adverts/created/rejected":
       return state;
-    case "adverts/created/fullfilled":
-      return [...(state ?? []), action.payload];
+    case "adverts/created/fulfilled":
+      return [...state, action.payload];
     //DELETE
     case "adverts/deleted/pending":
       return state;
     case "adverts/deleted/rejected":
       return state;
-    case "adverts/deleted/fullfilled":
+    case "adverts/deleted/fulfilled":
       return [
         ...(state ?? []).filter((advert) => advert.id !== action.payload.id),
       ];
@@ -94,6 +126,14 @@ export function adverts(
   }
 }
 
+export function filters(state=defaultState.filters,action:Actions):State['filters']{
+  switch (action.type) {
+    case "adverts/filters/fulfilled":
+      return action.payload       
+    default:
+      return state
+  }
+}
 
 export function advert(
   state = defaultState.advertSelected,
@@ -105,8 +145,8 @@ export function advert(
       return null;
     case "advert/loaded/rejected":
       return null;
-    case "advert/loaded/fullfilled":
-      return action.payload;  
+    case "advert/loaded/fulfilled":
+      return action.payload;
     default:
       return state;
   }
@@ -119,28 +159,28 @@ export function ui(state = defaultState.ui, action: Actions): State["ui"] {
       return { pending: true, error: null };
     case "tags/loaded/rejected":
       return { pending: false, error: action.payload };
-    case "tags/loaded/fullfilled":
+    case "tags/loaded/fulfilled":
       return { pending: false, error: null };
     //LOADED ADVERT UI
     case "adverts/loaded/pending":
       return { pending: true, error: null };
     case "adverts/loaded/rejected":
       return { pending: false, error: action.payload };
-    case "adverts/loaded/fullfilled":
+    case "adverts/loaded/fulfilled":
       return { pending: false, error: null };
     //DELETE ADVERT UI
     case "adverts/deleted/pending":
       return { pending: true, error: null };
     case "adverts/deleted/rejected":
       return { pending: false, error: action.payload };
-    case "adverts/deleted/fullfilled":
+    case "adverts/deleted/fulfilled":
       return { pending: false, error: null };
     //CREATE ADVERT UI
     case "adverts/created/pending":
       return { pending: true, error: null };
     case "adverts/created/rejected":
       return { pending: false, error: action.payload };
-    case "adverts/created/fullfilled":
+    case "adverts/created/fulfilled":
       return { pending: false, error: null };
     case "ui/reset-error":
       return { ...state, error: null };
@@ -154,7 +194,7 @@ export function modal(
   action: Actions,
 ): State["modal"] {
   switch (action.type) {
-    case "modal/show/fullfilled": {
+    case "modal/show/fulfilled": {
       const { data, type, visible } = action.payload;
       const response: Modal<Advert> = {
         data,
@@ -163,7 +203,7 @@ export function modal(
       };
       return response;
     }
-    case "modal/close/fullfilled":
+    case "modal/close/fulfilled":
       return { data: null, type: "", visible: false };
     default:
       return state;

@@ -27,11 +27,13 @@ export const LogIn = async (bodyLogin: Login) => {
 
 export const logOut = async () => {
   storage.remove("auth");
+  storage.remove('me')
   removeAuthorizationHeader();
 };
 
 export const userInformation = async () => {
   const url = `${URL_AUTH}/me`;
   const response = await client.get<UserResponse>(url);
+  storage.set('me',response.data.username)
   return response.data;
 };

@@ -1,21 +1,23 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Link, useParams } from "react-router";
 // import { detailAdvert } from "./service";
 // import type { Advert } from "./types";
 import imagePlaceholder from "../../assets/placeholder_image.png";
 import { DeliveryIcon } from "../../components/icons/delivery-icon";
 import { DeleteIcon } from "../../components/icons/delete-icon";
-import ModalDelete from "./partials/modal-delete";
+// import ModalDelete from "./partials/modal-delete";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { getAdvertRedux } from "../../store/selectors";
-import { advertLoaded } from "../../store/actions";
+import { advertLoaded, modalShowFullFilled } from "../../store/actions";
+import type { Advert } from "./types";
+import type { Modal } from "./partials/types";
 
 const AdvertPage = () => {
   const { advertId } = useParams();
   // const [advert, setAdverts] = useState<Advert | null>(null);
   const advert = useAppSelector(getAdvertRedux)
   const dispatch = useAppDispatch()
-  const modalDeleteRef = useRef<HTMLDialogElement>(null)
+  // const modalDeleteRef = useRef<HTMLDialogElement>(null)
 
   const photoClear = advert?.photo
     ? (advert?.photo as string)
@@ -27,10 +29,18 @@ const AdvertPage = () => {
     }
   }, [advertId,dispatch]);
   function handleShowModal(){
-    const modal = modalDeleteRef.current
-    if(modal){
-      modal.showModal()
-    }
+    const {name,id,photo,price,tags,sale} = advert!
+    const advertToDelete:Advert = {name,id,photo,price,tags,sale}
+        const modal:Modal<Advert> = {
+          data:advertToDelete,
+          type:'delete',
+          visible:true
+        }
+        dispatch(modalShowFullFilled(modal))
+    // const modal = modalDeleteRef.current
+    // if(modal){
+    //   modal.showModal()
+    // }
   }
   return (
     <>
@@ -114,7 +124,7 @@ const AdvertPage = () => {
           </div>
         </div>
       </div>
-      { advert && <ModalDelete ref={modalDeleteRef} advert={advert} /> }
+      {/* { advert && <ModalDelete ref={modalDeleteRef} advert={advert} /> } */}
     </>
   );
 };

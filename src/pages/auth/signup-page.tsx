@@ -8,10 +8,10 @@ import { Link, useNavigate } from "react-router";
 // import { useAuth } from "./context";
 import { createFormFactory } from "../../components/forms/FormFactory";
 import { useNotification } from "../../components/ui/notification/context";
-import { useUserInformation } from "./me/context";
+// import { useUserInformation } from "./me/context";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { getAuth } from "../../store/selectors";
-import { authLogin } from "../../store/actions";
+import { authLogin, sessionLoaded } from "../../store/actions";
 
 const SignPage = () => {
   const credentialsUser = useRef<User>({
@@ -22,7 +22,7 @@ const SignPage = () => {
   })
   const { Form, Input } = createFormFactory<User>()
   const { addNoti } = useNotification();  
-  const { onUserLogged } = useUserInformation();
+  // const { onUserLogged } = useUserInformation();
 
   // const { isLogged,onLogin } = useAuth()
   const isLogged = useAppSelector(getAuth)
@@ -39,9 +39,10 @@ const SignPage = () => {
       await singUp(values);
       const { email, password } = values
       dispatch(authLogin({ email,password,remember:true }))
+      dispatch(sessionLoaded())
       // await LogIn({ email,password,remember:true });      
       // onLogin();
-      onUserLogged();
+      // onUserLogged();
       navigate("/", { replace: true });
       addNoti({
         message: "Singup success, ¡Welcome!",

@@ -1,25 +1,31 @@
 import { type ComponentProps, type RefObject } from "react";
 import Modal from "./modal";
 import { CloseIcon } from "../../../components/icons/close-icon";
-import { useUserInformation } from "../../auth/me/context";
+// import { useUserInformation } from "../../auth/me/context";
 import { AxiosError } from "axios";
-import { useAuth } from "../../auth/context";
-import { logOut } from "../../auth/service";
+// import { useAuth } from "../../auth/context";
+// import { logOut } from "../../auth/service";
 import { UserIcon } from "../../../components/icons/user-icon";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { authLogout, sessionClosedFullFilled } from "../../../store/actions";
+import { getSessionUser } from "../../../store/selectors";
 
 const ModalConfirm = (props: ComponentProps<'dialog'>) => {   
-    const { onLogout } = useAuth();           
-    const { user,onUserLogout } = useUserInformation()    
-
+    // const { onLogout } = useAuth();           
+    // const { user,onUserLogout } = useUserInformation()    
+    const user = useAppSelector(getSessionUser)
+    const dispatch = useAppDispatch()
     function handleClickCloseModal(){
         const modalRef:RefObject<HTMLDialogElement> = props.ref as RefObject<HTMLDialogElement>
         modalRef.current.close()
     }
     async function handleClickAccept(){
         try {
-          await logOut();
-          onLogout();
-          onUserLogout()          
+          // await logOut();
+          // onLogout();
+          dispatch(authLogout())
+          dispatch(sessionClosedFullFilled())
+          // onUserLogout()          
         } catch (error) {
           if(error instanceof AxiosError){
             alert(error)
@@ -48,7 +54,7 @@ const ModalConfirm = (props: ComponentProps<'dialog'>) => {
         </header>
         <div className="px-7 pt-2 pb-3">
           <h3 className="pointer-events-none py-3 select-none">
-            ¿<span className="capitalize">{ user ? user.name : 'Unknow' }</span> estas seguro de cerrar sesión?            
+            ¿<span className="capitalize">{ user ? user : 'Unknow' }</span> estas seguro de cerrar sesión?            
           </h3>
           <div className="flex gap-2">
             <button

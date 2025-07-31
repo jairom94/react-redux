@@ -1,14 +1,17 @@
 import { NavLink } from "react-router";
-import { useAuth } from "../../pages/auth/context";
+// import { useAuth } from "../../pages/auth/context";
 // import { logOut } from "../../pages/auth/service";
 import { UserIcon } from "../../components/icons/user-icon";
 import { LogoutIcon } from "../../components/icons/logout-icon";
 // import { useUserInformation } from "./me/context";
 import { useRef } from "react";
 import ModalConfirm from "../adverts/partials/modal-confirm";
+import { useAppSelector } from "../../store";
+import { getAuth } from "../../store/selectors";
 
 export default function AuthButton() {
-  const { isLogged } = useAuth();
+  // const { isLogged } = useAuth();
+  const isLogged = useAppSelector(getAuth)
   const modalRef = useRef<HTMLDialogElement>(null)
 
   const handleLogoutClick = async () => {

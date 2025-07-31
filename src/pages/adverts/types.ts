@@ -26,11 +26,14 @@ export type AdvertResponse = Omit<AdvertSimple, 'photo'> & {
 
 export interface FilterByAdverts {
         name:string;
-        type:string;
-        tags:Tag[]
+        // type:string;
+        sale?:boolean;
+        tags:Tag[];
+        price:[number,number];
+        range:[number,number];
     }
 
 export interface RadioType {
   value:string;
-  state:boolean;
+  state?:boolean;
 }
