@@ -5,7 +5,7 @@ import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import "./filter.css";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { advertsFiltered, filterAdverts } from "../../../store/actions";
+import { filterAdverts } from "../../../store/actions";
 import { filtersRedux, getAdvertsRedux } from "../../../store/selectors";
 
 interface FilterProps {  
@@ -26,7 +26,7 @@ const Filter = ({
   const dispatch = useAppDispatch()  
 
   useEffect(()=>{
-    dispatch(advertsFiltered())    
+    // dispatch(advertsFiltered())    
   },[dispatch])
   
   useEffect(()=>{
