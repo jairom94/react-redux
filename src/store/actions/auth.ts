@@ -7,7 +7,7 @@ type AuthLoginPending = {
     type:'auth/login/pending';
 }
 type AuthLoginReject = {
-    type:'auth/login/reject';
+    type:'auth/login/rejected';
     payload:Error;
 }
 type AuthLoginFulFilled = {
@@ -29,7 +29,7 @@ export const authLoginPending = ():AuthLoginPending => ({
 })
 
 export const authLoginRejected = (error:Error):AuthLoginReject => ({
-    type:"auth/login/reject",
+    type:"auth/login/rejected",
     payload:error
 })
 
@@ -51,8 +51,12 @@ export function authLogin(credentials:Login):AppThunk<Promise<void>> {
     return async function (dispatch) {
         dispatch(authLoginPending())
         try {
+
             await LogIn(credentials)
             dispatch(authLoginFulFilled())
+            // const to = router.state.location.state?.from ?? "/";
+            // router.navigate(to, { replace: true });
+
         } catch (error) {
             if(error instanceof Error) {
                 dispatch(authLoginRejected(error))

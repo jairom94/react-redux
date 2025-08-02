@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import type { Login } from "./types";
 // import ButtonCustom from "../../components/ui/button";
 import { AxiosError } from "axios";
-import { LogIn } from "./service";
+// import { LogIn } from "./service";
 import LoginLoader from "../../components/ui/login-loader";
 // import { useAuth } from "./context";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 // import { useUserInformation } from "./me/context";
 // import useNotifications from "../../components/ui/notification/useNotifications";
 // import Notfications from "../../components/ui/notification/notifications";
@@ -30,7 +30,7 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
-  const location = useLocation();  
+  // const location = useLocation();  
 
   const { addNoti } = useNotification();  
 
@@ -44,13 +44,11 @@ const LoginPage = () => {
   async function handleLogin(values:Login){    
     try {      
       setIsLoading(true);
-      await LogIn(values)
-      // onLogin();
+      // await LogIn(values)
       await dispatch(authLogin(values))
       await dispatch(sessionLoaded())
-      // onUserLogged();
-      const to = location.state?.from ?? "/";
-      navigate(to, { replace: true });
+      // const to = location.state?.from ?? "/";
+      // navigate(to, { replace: true });
       addNoti({
         message: "Login success",
         id: crypto.randomUUID(),

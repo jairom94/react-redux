@@ -14,7 +14,7 @@ export default function configureStore(preloadedState:Partial<reducers.State>){
         preloadedState as never,
     composeWithDevTools(
         applyMiddleware(
-            thunk.withExtraArgument()
+            thunk.withExtraArgument(),
         )
     )
     )

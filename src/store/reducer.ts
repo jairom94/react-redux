@@ -48,15 +48,12 @@ export function auth(
 ): State["auth"] {
   switch (action.type) {
     case "auth/login/pending":
-      return false;
-    case "auth/login/reject":
-      return false;
-    case "auth/login/fulfilled":
-      return true;
+    case "auth/login/rejected":
     case "auth/logout/rejected":
-      return false;
     case "auth/logout/fulfilled":
-      return false;
+      return false;      
+    case "auth/login/fulfilled":
+      return true;    
     default:
       return state;
   }
@@ -100,23 +97,20 @@ export function adverts(
   switch (action.type) {
     //LOADED
     case "adverts/loaded/pending":
-      return [];
-    case "adverts/loaded/rejected":
+    case "adverts/loaded/rejected":      
       return [];
     case "adverts/loaded/fulfilled":
       return action.payload;
     //CREATED
     case "adverts/created/pending":
-      return state;
     case "adverts/created/rejected":
-      return state;
+      return state;      
     case "adverts/created/fulfilled":
       return [...state, action.payload];
     //DELETE
     case "adverts/deleted/pending":
-      return state;
     case "adverts/deleted/rejected":
-      return state;
+      return state;    
     case "adverts/deleted/fulfilled":
       return [
         ...(state ?? []).filter((advert) => advert.id !== action.payload.id),

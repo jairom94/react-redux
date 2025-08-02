@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import type { Tag } from "./types";
 import AdvertItem from "./partials/advert-item";
-// import { getAdverts } from "./service";
-// import manage from "../../utils/manage";
 import { useSearchParams } from "react-router";
 import Filter from "./partials/filter";
 import NoAdverts from "./partials/no-adverts";
@@ -10,14 +8,10 @@ import BreadCrumbs from "./partials/bread-crumbs";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { filtersRedux, getAdvertsRedux, getUi } from "../../store/selectors";
 import { advertsLoaded } from "../../store/actions";
-// import { AxiosError } from "axios";
 import { useNotification } from "../../components/ui/notification/context";
-// import { createPortal } from "react-dom";
-// import ModalUpdate from "./partials/modal-update";
-// import { getAdverts } from "./service";
 
-const AdvertsPage = () => {
-  // const [adverts, setAdverts] = useState<Advert[]>([]);
+
+const AdvertsPage = () => {  
   const { addNoti } = useNotification();
   
   const dispatch = useAppDispatch();

@@ -6,7 +6,7 @@ import { createAdvert, deleteAdvert, detailAdvert, getAdverts } from "../../page
 //LOADED ADVERTS
 type AdvertsLoadedPending = {
     type:'adverts/loaded/pending',
-    payload:null
+    payload:[]
 }
 type AdvertsLoadedRejected = {
     type:'adverts/loaded/rejected';
@@ -75,7 +75,7 @@ type FiltersLoadedAdverts = {
 //LOADED ADVERTS
 export const advertsLoadedPending = ():AdvertsLoadedPending => ({
     type: "adverts/loaded/pending",
-    payload:null
+    payload:[]
 })
 export const advertsLoadedRejected = (error:Error):AdvertsLoadedRejected => ({
     type:"adverts/loaded/rejected",

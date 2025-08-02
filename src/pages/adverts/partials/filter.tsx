@@ -7,6 +7,7 @@ import "./filter.css";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { filterAdverts } from "../../../store/actions";
 import { filtersRedux, getAdvertsRedux } from "../../../store/selectors";
+import { useResetFilter } from "../../../store/hooks";
 
 interface FilterProps {  
   showByCategory: Tag | "";  
@@ -23,11 +24,18 @@ const Filter = ({
 
   const adverts = useAppSelector(getAdvertsRedux);
 
-  const dispatch = useAppDispatch()  
+  const dispatch = useAppDispatch() 
+  
+  const resetFilter = useResetFilter()
 
   useEffect(()=>{
-    // dispatch(advertsFiltered())    
-  },[dispatch])
+    return () => {
+      // const temp = { ...filters,name:'',price:[start,end] as [number,number],tags:[] }
+      // delete temp.sale
+      // dispatch(filterAdverts(temp))
+      resetFilter()
+    }
+  },[])
   
   useEffect(()=>{
     if(!adverts.length) return;
@@ -39,15 +47,13 @@ const Filter = ({
   },[adverts])
   
 
-  function handleChangeTags(tag: Tag) {
-    // addTagToFilters(tag);
+  function handleChangeTags(tag: Tag) {    
     dispatch(filterAdverts({
       ...filters,
       tags: [...filters.tags, tag]
     }))
   }
-  function handleRemoveTagSelected(tag: Tag) {
-    // removeTagFromFIlters(tag);
+  function handleRemoveTagSelected(tag: Tag) {    
     dispatch(filterAdverts({
       ...filters,
       tags: [...filters.tags.filter((t) => t !== tag)]
@@ -81,9 +87,10 @@ const Filter = ({
   }
 
   function handleClick(){
-    const temp = { ...filters,name:'',price:[start,end] as [number,number],tags:[] }
-    delete temp.sale
-    dispatch(filterAdverts(temp))
+    // const temp = { ...filters,name:'',price:[start,end] as [number,number],tags:[] }
+    // delete temp.sale
+    // dispatch(filterAdverts(temp))
+    resetFilter()
   }  
   
   return (

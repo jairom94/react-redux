@@ -1,5 +1,4 @@
-import React from "react";
-import { Link } from "react-router";
+import { Link, NavLink } from "react-router";
 
 interface BreadCrumbsProps {
     searchByCategory:string
@@ -9,9 +8,9 @@ const BreadCrumbs = ({searchByCategory}:BreadCrumbsProps) => {
     <>
       <p>
         <span>Ir a</span> <Link to={`/`}>Inicio</Link> /{" "}
-        <Link to={`/adverts`}>
+        <NavLink to={`/adverts`} end>
           <span>Anuncios</span>
-        </Link>
+        </NavLink>
       </p>{" "}
       {searchByCategory && (
         <p>
