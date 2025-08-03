@@ -6,8 +6,11 @@ import type { Actions } from './actions';
 export type State = {
   auth: boolean;
   session:string;
-  advertSelected: Advert | null;
-  adverts: Advert[];
+//   advertSelected: Advert | null;
+  adverts:{
+    loaded:boolean;
+    data: Advert[];
+  };
   tags: Tag[];
   filters:FilterByAdverts
 
@@ -21,8 +24,11 @@ export type State = {
 const defaultState: State = {
   auth: false,
   session:'',
-  advertSelected: null,
-  adverts: [],
+//   advertSelected: null,
+  adverts: {
+    loaded:false,
+    data:[]
+  },
   tags: [],
   filters:{
     name:'',
@@ -98,23 +104,30 @@ export function adverts(
     //LOADED
     case "adverts/loaded/pending":
     case "adverts/loaded/rejected":      
-      return [];
+      return { loaded:false,data:[] };
     case "adverts/loaded/fulfilled":
-      return action.payload;
+      return {loaded:true,data:action.payload};
     //CREATED
     case "adverts/created/pending":
     case "adverts/created/rejected":
       return state;      
     case "adverts/created/fulfilled":
-      return [...state, action.payload];
+      return { ...state,data:[...state.data, action.payload] };
     //DELETE
     case "adverts/deleted/pending":
     case "adverts/deleted/rejected":
       return state;    
     case "adverts/deleted/fulfilled":
-      return [
-        ...(state ?? []).filter((advert) => advert.id !== action.payload.id),
-      ];
+      return {...state,data:[
+        ...state.data.filter((advert) => advert.id !== action.payload.id),
+      ]};
+    //DETAIL
+    case "adverts/detail/pending":
+        return { ...state,loaded:false }
+    case "adverts/detail/rejected":
+        return state
+    case "adverts/detail/fulfilled":
+        return { ...state,data:[action.payload] }
     default:
       return state;
   }
@@ -129,22 +142,22 @@ export function filters(state=defaultState.filters,action:Actions):State['filter
   }
 }
 
-export function advert(
-  state = defaultState.advertSelected,
-  action: Actions,
-): State["advertSelected"] {
-  switch (action.type) {
-    //LOADED
-    case "advert/loaded/pending":
-      return null;
-    case "advert/loaded/rejected":
-      return null;
-    case "advert/loaded/fulfilled":
-      return action.payload;
-    default:
-      return state;
-  }
-}
+// export function advert(
+//   state = defaultState.advertSelected,
+//   action: Actions,
+// ): State["advertSelected"] {
+//   switch (action.type) {
+//     //LOADED
+//     case "advert/loaded/pending":
+//       return null;
+//     case "advert/loaded/rejected":
+//       return null;
+//     case "advert/loaded/fulfilled":
+//       return action.payload;
+//     default:
+//       return state;
+//   }
+// }
 
 export function ui(state = defaultState.ui, action: Actions): State["ui"] {
   switch (action.type) {

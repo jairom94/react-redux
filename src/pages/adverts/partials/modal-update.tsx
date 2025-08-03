@@ -5,11 +5,11 @@ import FormField from "../../../components/ui/form-field";
 import PreviewImage from "./preview-image";
 import ButtonCustom from "../../../components/ui/button";
 import { useNotification } from "../../../components/ui/notification/context";
-import { AxiosError } from "axios";
 import SaleCheck from "../../../components/ui/salecheck/salecheck";
 import TagsSelected from "../../../components/tags/tags-selected";
 import { useAppDispatch } from "../../../store";
 import { modalCloseFullFilled } from "../../../store/actions";
+import { getErrorMessage } from "../../../api/client";
 // import { useAppSelector } from "../../../store";
 // import { getModalShowed } from "../../../store/selectors";
 
@@ -98,14 +98,11 @@ const ModalUpdate = ({advert,...props}:ModalUpdateProps) => {
         //   tags:advert.tags,          
         // }
     } catch (error) {
-      if (error instanceof AxiosError) {
-        addNoti({
-          message: error.response?.data?.message ?? error.message ?? "",
-          id: crypto.randomUUID(),
-          type: "error",
-          createdAt: Date.now(),
-        });
-      }
+      addNoti({
+        message: getErrorMessage(error),
+        type: "error",          
+      });
+      
     }
   }
 

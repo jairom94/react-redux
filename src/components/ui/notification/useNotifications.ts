@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import type { Notification } from "./types";
+import type { Notification, PrevNotification } from "./types";
 
 
 function useNotifications(){
@@ -15,14 +15,19 @@ function useNotifications(){
         }
     },[])
 
-    const addNoti = useCallback((newNoti:Notification) => {
-        setNotifications([...notifications,newNoti])
+    const addNoti = useCallback((newNoti:PrevNotification) => {
+        const fullNotification:Notification = {
+            ...newNoti,
+            id: crypto.randomUUID(),
+            createdAt: Date.now()
+        }
+        setNotifications([...notifications,fullNotification])
 
         const timeoutId = setTimeout(() => {
-            removeNoti(newNoti.id)
+            removeNoti(fullNotification.id)
         }, 5000);
 
-        timeoutMapRef.current.set(newNoti.id,timeoutId)
+        timeoutMapRef.current.set(fullNotification.id,timeoutId)
     },[removeNoti,notifications])
     
 

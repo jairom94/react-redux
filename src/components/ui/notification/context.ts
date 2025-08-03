@@ -1,8 +1,8 @@
 import { createContext, useContext } from "react";
-import type { Notification } from "./types";
+import type { PrevNotification } from "./types";
 
 interface NotificationContextType{
-    addNoti:(notification:Notification)=>void;
+    addNoti:(notification:PrevNotification)=>void;
 }
 
 export const NotificationContext = createContext<NotificationContextType | null>(null)

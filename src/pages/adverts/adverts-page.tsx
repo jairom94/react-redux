@@ -24,19 +24,21 @@ const AdvertsPage = () => {
 
   const { error, pending } = useAppSelector(getUi);
 
-
+  // console.log(pending,error);
+  
   useEffect(() => {    
-    dispatch(advertsLoaded(searchByCategory))        
+    dispatch(advertsLoaded(searchByCategory))            
+  }, [searchByCategory, dispatch]);
+
+  useEffect(()=>{
     if(error){
       addNoti({
           message: `ADVERTS PAGE: ${error}`,
-          type: "error",
-          id: crypto.randomUUID(),
-          createdAt: Date.now(),
+          type: "error",          
       });
     }
-  }, [searchByCategory, dispatch,error]);
-
+  },[error])
+  
   
   const filters = useAppSelector(filtersRedux)
 

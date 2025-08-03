@@ -13,13 +13,13 @@ import CheckItem from "../../components/ui/check-item";
 import ButtonCustom from "../../components/ui/button";
 
 import PreviewImage from "./partials/preview-image";
-import { AxiosError } from "axios";
 import { useNavigate } from "react-router";
 import { useNotification } from "../../components/ui/notification/context";
 import SaleCheck from "../../components/ui/salecheck/salecheck";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { advertsCreated } from "../../store/actions";
 import { getTagsRedux } from "../../store/selectors";
+import { getErrorMessage } from "../../api/client";
 
 const NewAdvertPage = () => {
   const initialValueAdvert: Advert = {
@@ -119,21 +119,15 @@ const NewAdvertPage = () => {
       setRanNum(Math.random);
       addNoti({
         message:'Success, advert created',
-        id:crypto.randomUUID(),
-        type:'success',
-        createdAt:Date.now()
+        type:'success',        
       })
       // alert(`Anuncio creado: ${resp.name}`)
       navigate(`/adverts/${advertCreated.id}`,{replace:true})
     } catch (error) {
-      if(error instanceof AxiosError){
-        addNoti({
-          message: error.response?.data?.message ?? error.message ?? "",
-          type: "error",
-          id: crypto.randomUUID(),
-          createdAt: Date.now(),
-        });
-      }
+      addNoti({
+          message: getErrorMessage(error),
+          type: "error",          
+      });        
     }
   }
   

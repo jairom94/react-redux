@@ -2,9 +2,6 @@ import { type ComponentProps, type RefObject } from "react";
 import Modal from "./modal";
 import { CloseIcon } from "../../../components/icons/close-icon";
 // import { useUserInformation } from "../../auth/me/context";
-import { AxiosError } from "axios";
-// import { useAuth } from "../../auth/context";
-// import { logOut } from "../../auth/service";
 import { UserIcon } from "../../../components/icons/user-icon";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { authLogout, sessionClosedFullFilled } from "../../../store/actions";
@@ -20,18 +17,8 @@ const ModalConfirm = (props: ComponentProps<'dialog'>) => {
         modalRef.current.close()
     }
     async function handleClickAccept(){
-        try {
-          // await logOut();
-          // onLogout();
-          dispatch(authLogout())
-          dispatch(sessionClosedFullFilled())
-          // onUserLogout()          
-        } catch (error) {
-          if(error instanceof AxiosError){
-            alert(error)
-          }
-        }
-        
+      dispatch(authLogout())
+      dispatch(sessionClosedFullFilled())      
     }
   return (
     <Modal {...props}>

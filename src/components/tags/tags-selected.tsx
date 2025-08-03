@@ -67,7 +67,7 @@ const TagsSelected = ({
           ))}
       </ul>
       <select
-        className="rounded-lg border border-emerald-500 px-3 py-1 font-medium text-emerald-800 focus:outline-emerald-700"
+        className="rounded-lg border border-emerald-500 px-3 py-1 font-medium text-emerald-800 focus:outline-emerald-800 transition-all duration-100 hover:outline-emerald-800 hover:outline-2 cursor-pointer"
         value={selectedTag}
         onChange={handleChangeCategory}
         name="tags"

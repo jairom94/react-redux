@@ -1,7 +1,4 @@
 import { useEffect, useRef } from "react";
-// import ButtonCustom from "../../components/ui/button";
-// import FormField from "../../components/ui/form-field";
-import { AxiosError } from "axios";
 import { singUp } from "./service";
 import type { User } from "./types";
 import { Link, useNavigate } from "react-router";
@@ -12,6 +9,7 @@ import { useNotification } from "../../components/ui/notification/context";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { getAuth } from "../../store/selectors";
 import { authLogin, sessionLoaded } from "../../store/actions";
+import { getErrorMessage } from "../../api/client";
 
 const SignPage = () => {
   const credentialsUser = useRef<User>({
@@ -46,19 +44,13 @@ const SignPage = () => {
       navigate("/", { replace: true });
       addNoti({
         message: "Singup success, ¡Welcome!",
-        id: crypto.randomUUID(),
-        type: "success",
-        createdAt: Date.now(),
+        type: "success",        
       });
     } catch (error) {
-      if (error instanceof AxiosError) {
-        addNoti({
-          message: error.response?.data?.message ?? error.message ?? "",
-          type: "error",
-          id: crypto.randomUUID(),
-          createdAt: Date.now(),
-        });
-      }
+      addNoti({
+          message: getErrorMessage(error),
+          type: "error",          
+      });        
     }
   }
   return (

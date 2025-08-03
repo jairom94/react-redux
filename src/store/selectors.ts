@@ -6,11 +6,15 @@ export const getAuth = (state:RootState) => state.auth
 
 export const getSessionUser = (state:RootState) => state.session
 
-export const getAdvertsRedux = (state:RootState) => state.adverts
+export const getAdvertsRedux = (state:RootState) => state.adverts.data
 
 export const filtersRedux = (state:RootState) => state.filters
 
-export const getAdvertRedux = (state:RootState) => state.advert
+export const getAdvertRedux = (advertId?:string) => {
+    return function (state:RootState) {
+        return state.adverts.data.find(advert => advert.id === advertId) ?? null
+    }
+}
 
 export const getTagsRedux = (state:RootState) => state.tags
 

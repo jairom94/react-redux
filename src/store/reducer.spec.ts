@@ -5,7 +5,7 @@ describe("reducer auth",()=>{
     test("should return state when actions not controlled",()=>{
         // @ts-expect-error: just by test
         const result = auth(false,{
-            type:"advert/loaded/fulfilled"
+            type:"adverts/detail/fulfilled"
         })
         expect(result).toBe(false)
     })
@@ -39,7 +39,7 @@ describe("reducer adverts",()=>{
             type:"adverts/loaded/pending",
             payload:[]
         })
-        expect(result).toHaveLength(0)
+        expect(result.data).toHaveLength(0)
     })
 
     test("should return a adverts list action -> 'adverts/loaded/fulfilled'",()=>{
@@ -49,6 +49,6 @@ describe("reducer adverts",()=>{
             // @ts-expect-error just by test
             payload:adverts_test
         })
-        expect(result).toEqual(adverts_test)
+        expect(result.data).toEqual(adverts_test)
     })
 })

@@ -16,7 +16,7 @@ const Notification = ({ message, type, onDelete,createdAt }: NotificationProps) 
 
     const interval = setInterval(() => {
       const elapsed = Date.now() - createdAt;
-      const percentage = Math.min((elapsed / duration) * 100, 100);
+      const percentage = Math.min((elapsed / duration) * 100,100);
       setProgress(percentage);
 
       if (elapsed >= duration) {

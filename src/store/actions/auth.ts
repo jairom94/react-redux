@@ -1,6 +1,7 @@
 import type { AppThunk } from "..";
-import { LogIn, logOut } from "../../pages/auth/service";
+// import { LogIn, logOut } from "../../pages/auth/service";
 import type { Login } from "../../pages/auth/types";
+import { sessionLoaded } from "./session";
 
 //LOGIN AUTH
 type AuthLoginPending = {
@@ -48,14 +49,15 @@ export const authLogoutRejected = (error:Error):AuthLogoutRejected => ({
 
 //LOGIN ACTION
 export function authLogin(credentials:Login):AppThunk<Promise<void>> {
-    return async function (dispatch) {
+    return async function (dispatch,_getState,{ api,router }) {
         dispatch(authLoginPending())
         try {
 
-            await LogIn(credentials)
+            await api.auth.LogIn(credentials)
             dispatch(authLoginFulFilled())
-            // const to = router.state.location.state?.from ?? "/";
-            // router.navigate(to, { replace: true });
+            await dispatch(sessionLoaded())
+            const to = router.state.location.state?.from ?? "/";
+            router.navigate(to, { replace: true });
 
         } catch (error) {
             if(error instanceof Error) {
@@ -68,10 +70,10 @@ export function authLogin(credentials:Login):AppThunk<Promise<void>> {
 
 //LOGOUT ACTION
 export function authLogout():AppThunk<Promise<void>> {
-    return async function (dispatch) {
+    return async function (dispatch,_getState,{api}) {
         // dispatch(authLogoutPending())
         try {            
-            await logOut();
+            await api.auth.logOut();
             dispatch(authLogoutFulFilled());
         } catch (error) {
             if(error instanceof Error) {

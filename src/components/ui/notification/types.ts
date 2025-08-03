@@ -6,3 +6,5 @@ export interface Notification {
     type: Icons;
     createdAt: number;
 }
+
+export type PrevNotification = Omit<Notification, "id" | "createdAt">

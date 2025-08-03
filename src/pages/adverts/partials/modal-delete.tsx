@@ -3,12 +3,11 @@ import Modal from "./modal";
 import { DeleteIcon } from "../../../components/icons/delete-icon";
 import { CloseIcon } from "../../../components/icons/close-icon";
 import type { Advert } from "../types";
-// import { deleteAdvert } from "../service";
-import { AxiosError } from "axios";
 import { useNavigate } from "react-router";
 import { useNotification } from "../../../components/ui/notification/context";
 import { useAppDispatch } from "../../../store";
 import { advertsDeletedOne, modalCloseFullFilled } from "../../../store/actions";
+import { getErrorMessage } from "../../../api/client";
 
 interface ModalDeleteProps extends ComponentProps<'dialog'> {
     advert:Advert;
@@ -33,19 +32,13 @@ const ModalDelete = ({advert:{id,name},...props}:ModalDeleteProps) => {
             navigate('/adverts')
             addNoti({
               message:'Advert was deleted, successull',
-              id:crypto.randomUUID(),
-              type:'success',
-              createdAt:Date.now()
+              type:'success',              
             })
         } catch (error) {
-            if(error instanceof AxiosError){
-                addNoti({
-                  message: error.response?.data?.message ?? error.message ?? "",
-                  id:crypto.randomUUID(),
-                  type:'error',
-                  createdAt:Date.now()
-                })
-            }
+            addNoti({
+                message: getErrorMessage(error),
+                type: "error",                
+            });
         }
     }
   return (

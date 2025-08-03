@@ -15,7 +15,7 @@ import type { Modal } from "./partials/types";
 const AdvertPage = () => {
   const { advertId } = useParams();
   // const [advert, setAdverts] = useState<Advert | null>(null);
-  const advert = useAppSelector(getAdvertRedux)
+  const advert = useAppSelector(getAdvertRedux(advertId!))
   const dispatch = useAppDispatch()
   // const modalDeleteRef = useRef<HTMLDialogElement>(null)
 
@@ -23,10 +23,10 @@ const AdvertPage = () => {
     ? (advert?.photo as string)
     : imagePlaceholder;
   useEffect(() => {
-    if (advertId) {
-      dispatch(advertLoaded(advertId))
-      // detailAdvert(advertId).then((data) => setAdverts(data));
+    if (!advertId) {      
+      return;
     }
+    dispatch(advertLoaded(advertId))
   }, [advertId,dispatch]);
   function handleShowModal(){
     const {name,id,photo,price,tags,sale} = advert!
@@ -36,11 +36,7 @@ const AdvertPage = () => {
           type:'delete',
           visible:true
         }
-        dispatch(modalShowFullFilled(modal))
-    // const modal = modalDeleteRef.current
-    // if(modal){
-    //   modal.showModal()
-    // }
+        dispatch(modalShowFullFilled(modal))    
   }
   return (
     <>

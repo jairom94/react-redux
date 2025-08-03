@@ -1,7 +1,8 @@
 import { AxiosError } from "axios";
 import type { AppThunk } from "..";
 import type { Advert, FilterByAdverts } from "../../pages/adverts/types";
-import { createAdvert, deleteAdvert, detailAdvert, getAdverts } from "../../pages/adverts/service";
+import { getAdvertRedux } from "../selectors";
+// import { createAdvert, deleteAdvert, detailAdvert } from "../../pages/adverts/service";
 
 //LOADED ADVERTS
 type AdvertsLoadedPending = {
@@ -46,16 +47,16 @@ type AdvertsCreatedFulFilled = {
 }
 
 //LOADED ADVERT
-type AdvertLoadedPending = {
-    type:'advert/loaded/pending',
+type AdvertDetailPending = {
+    type:'adverts/detail/pending',
     payload:null    
 }
-type AdvertLoadedRejected = {
-    type:'advert/loaded/rejected',
+type AdvertDetailRejected = {
+    type:'adverts/detail/rejected',
     payload:Error;
 }
-type AdvertLoadedFulFilled = {
-    type:'advert/loaded/fulfilled',
+type AdvertDetailFulFilled = {
+    type:'adverts/detail/fulfilled',
     payload:Advert;
 }
 
@@ -116,16 +117,16 @@ export const advertsCreatedFulFilled = (advert:Advert):AdvertsCreatedFulFilled =
 })
 
 //ADVERT LOADED
-export const advertLoadedPending = ():AdvertLoadedPending => ({
-    type: "advert/loaded/pending",
+export const advertDetailPending = ():AdvertDetailPending => ({
+    type: "adverts/detail/pending",
     payload:null
 })
-export const advertLoadedRejected = (error:Error):AdvertLoadedRejected => ({
-    type:"advert/loaded/rejected",
+export const advertDetailRejected = (error:Error):AdvertDetailRejected => ({
+    type:"adverts/detail/rejected",
     payload:error
 })
-export const advertLoadedFulFilled = (advert:Advert):AdvertLoadedFulFilled => ({
-    type:"advert/loaded/fulfilled",
+export const advertDetailFulFilled = (advert:Advert):AdvertDetailFulFilled => ({
+    type:"adverts/detail/fulfilled",
     payload:advert
 })
 
@@ -138,16 +139,19 @@ export const filterAdverts = (filters:FilterByAdverts):FiltersAdverts =>({
 
 
 //LOADED ADVERT DETAIL ACTION
-export function advertLoaded(advertId:string):AppThunk<Advert|null>{
-    return function (dispatch,getState) {
-        dispatch(advertLoadedPending())
-        try {
-            const advert = getState().adverts.find(a => a.id === advertId) ?? null
-            dispatch(advertLoadedFulFilled(advert!))
-            return advert
+export function advertLoaded(advertId:string):AppThunk<Promise<void>>{
+    return async function (dispatch,getState,{api}) {
+        const state = getState()
+        if(getAdvertRedux(advertId)(state)){
+            return;
+        }
+        dispatch(advertDetailPending())
+        try {          
+            const advert = await api.adverts.detailAdvert(advertId)
+            dispatch(advertDetailFulFilled(advert))            
         } catch (error) {
-            if(error instanceof AxiosError){
-                dispatch(advertLoadedRejected(error))
+            if(error instanceof Error){
+                dispatch(advertDetailRejected(error))
             }
             throw error
         }
@@ -156,13 +160,17 @@ export function advertLoaded(advertId:string):AppThunk<Advert|null>{
 
 //LOADED ADVERTS ACTION
 export function advertsLoaded(filterByTag:string):AppThunk<Promise<void>>{
-    return async function (dispatch) {
+    return async function (dispatch,getState,{api}) {
+        const state = getState()
+        if(state.adverts.loaded){
+            return;
+        }
         dispatch(advertsLoadedPending())
         try {
-            const adverts = await getAdverts(filterByTag)            
+            const adverts = await api.adverts.getAdverts(filterByTag)            
             dispatch(advertsLoadedFulFilled(adverts))
         } catch (error) {
-            if(error instanceof AxiosError){
+            if(error instanceof Error){
                 dispatch(advertsLoadedRejected(error))
             }
             throw error
@@ -172,11 +180,11 @@ export function advertsLoaded(filterByTag:string):AppThunk<Promise<void>>{
 
 //CREATED ADVERT ACTION
 export function advertsCreated(newAdvert:Advert):AppThunk<Promise<Advert>>{
-    return async function (dispatch) {
+    return async function (dispatch,_getState,{api}) {
         dispatch(advertsCreatedPending())
         try {
-            const { id } = await createAdvert(newAdvert)
-            const advert = await detailAdvert((id ?? '').toString())
+            const { id } = await api.adverts.createAdvert(newAdvert)
+            const advert = await api.adverts.detailAdvert((id ?? '').toString())
             dispatch(advertsCreatedFulFilled(advert))
             return advert
         } catch (error) {
@@ -190,11 +198,11 @@ export function advertsCreated(newAdvert:Advert):AppThunk<Promise<Advert>>{
 
 //DELETED ADVERT ACTION
 export function advertsDeletedOne(advertId:string):AppThunk<Promise<void>>{
-    return async function (dispatch) {
+    return async function (dispatch,_getState,{api}) {
         dispatch(advertsDeletedPending())
         try {
-            const advert = await detailAdvert(advertId)                      
-            await deleteAdvert(advertId)
+            const advert = await api.adverts.detailAdvert(advertId)                      
+            await api.adverts.deleteAdvert(advertId)
             dispatch(advertsDeletedFulFilled(advert))
         } catch (error) {
             if(error instanceof AxiosError){
@@ -221,8 +229,8 @@ export type AdvertsActions =
 | AdvertsDeletedPending //Adverts Deleted
 | AdvertsDeletedRejected
 | AdvertsDeletedFulFilled
-| AdvertLoadedPending //Advert
-| AdvertLoadedRejected
-| AdvertLoadedFulFilled
+| AdvertDetailPending //Advert
+| AdvertDetailRejected
+| AdvertDetailFulFilled
 | FiltersAdverts //Filter by adverts
 | FiltersLoadedAdverts
