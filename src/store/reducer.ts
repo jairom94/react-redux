@@ -6,14 +6,12 @@ import type { Actions } from './actions';
 export type State = {
   auth: boolean;
   session:string;
-//   advertSelected: Advert | null;
   adverts:{
     loaded:boolean;
     data: Advert[];
   };
   tags: Tag[];
-  filters:FilterByAdverts
-
+  filters:FilterByAdverts;
   ui: {
     pending: boolean;
     error: Error | null;
@@ -142,22 +140,6 @@ export function filters(state=defaultState.filters,action:Actions):State['filter
   }
 }
 
-// export function advert(
-//   state = defaultState.advertSelected,
-//   action: Actions,
-// ): State["advertSelected"] {
-//   switch (action.type) {
-//     //LOADED
-//     case "advert/loaded/pending":
-//       return null;
-//     case "advert/loaded/rejected":
-//       return null;
-//     case "advert/loaded/fulfilled":
-//       return action.payload;
-//     default:
-//       return state;
-//   }
-// }
 
 export function ui(state = defaultState.ui, action: Actions): State["ui"] {
   switch (action.type) {

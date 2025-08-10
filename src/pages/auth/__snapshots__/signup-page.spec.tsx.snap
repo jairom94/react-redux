@@ -1,0 +1,101 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SignupPage > should render correctly 1`] = `
+<div>
+  <div
+    class="bg-gray-800 min-h-dvh flex flex-col justify-center items-center"
+  >
+    <div
+      class="bg-white px-5 py-8 rounded-lg md:container-md container flex flex-col justify-center gap-4"
+    >
+      <h3
+        class="text-2xl font-medium text-gray-800"
+      >
+        Formulario de registro
+      </h3>
+      <form
+        class="flex flex-col gap-2"
+      >
+        <div
+          class="form-field flex flex-col gap-1"
+        >
+          <label>
+            Nombres
+          </label>
+          <input
+            class="rounded-md border px-4 py-2 undefined"
+            name="name"
+            type="text"
+            value=""
+          />
+        </div>
+        <div
+          class="form-field flex flex-col gap-1"
+        >
+          <label>
+            Nombre de usuario
+          </label>
+          <input
+            class="rounded-md border px-4 py-2 undefined"
+            name="username"
+            type="text"
+            value=""
+          />
+        </div>
+        <div
+          class="form-field flex flex-col gap-1"
+        >
+          <label>
+            E-mail
+          </label>
+          <input
+            class="rounded-md border px-4 py-2 undefined"
+            name="email"
+            type="email"
+            value=""
+          />
+        </div>
+        <div
+          class="form-field flex flex-col gap-1"
+        >
+          <label>
+            Contraseña
+          </label>
+          <input
+            class="rounded-md border px-4 py-2 undefined"
+            name="password"
+            type="password"
+            value=""
+          />
+        </div>
+        <div
+          class="form-field flex flex-col"
+        >
+          <input
+            class="rounded-md border px-4 py-2 bg-emerald-600 hover:bg-emerald-500 transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+            name="enviar"
+            type="submit"
+          />
+        </div>
+      </form>
+      <div
+        class="flex justify-center"
+      >
+        <p
+          class="font-light text-gray-700"
+        >
+          ¿Ya tienes una cuenta?
+           
+          <a
+            class="text-md font-medium text-emerald-600 underline"
+            data-discover="true"
+            href=""
+          >
+            Iniciar sesión
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;

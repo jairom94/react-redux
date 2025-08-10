@@ -24,7 +24,6 @@ const LoginPage = () => {
   
   const isLogged = useAppSelector(getAuth)
   const dispatch = useAppDispatch()
-  // const { onUserLogged } = useUserInformation();
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -36,17 +35,13 @@ const LoginPage = () => {
     if (isLogged) {
       navigate("/", { replace: true });
     }
-  }, [isLogged, navigate]);  
+  }, [isLogged,navigate]);  
   const { Form, Input } = createFormFactory<Login>();  
 
   async function handleLogin(values:Login){    
     try {      
-      setIsLoading(true);
-      // await LogIn(values)
-      await dispatch(authLogin(values))
-      // await dispatch(sessionLoaded())
-      // const to = location.state?.from ?? "/";
-      // navigate(to, { replace: true });
+      setIsLoading(true);      
+      await dispatch(authLogin(values))      
       addNoti({
         message: "Login success",
         type: "success",        
@@ -78,7 +73,6 @@ const LoginPage = () => {
           </h3>
           <Form
             initialValue={credentials.current}
-            // onChange={setCredentials}
             onSubmit={handleLogin}
             className="flex flex-col gap-2"
           >
@@ -88,7 +82,6 @@ const LoginPage = () => {
             <Input 
             name="enviar" 
             type="submit" 
-            // disabled={isDisabled}
             className="bg-emerald-600 hover:bg-emerald-500 transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
             />
           </Form>
