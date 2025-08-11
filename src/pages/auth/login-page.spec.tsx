@@ -1,8 +1,12 @@
-import { render } from "@testing-library/react";
+import { render,screen } from "@testing-library/react";
 import LoginPage from "./login-page";
 import { Provider } from "react-redux";
 import { NotificationContext } from "../../components/ui/notification/context";
 import { Router } from "react-router";
+import userEvent from "@testing-library/user-event";
+
+import { authLogin } from "../../store/actions"
+vi.mock("../../store/actions")
 
 describe("LoginPage", () => {
   const state = {
@@ -53,5 +57,21 @@ describe("LoginPage", () => {
     expect(container).toMatchSnapshot();
   });
 
-  test("")
+  test("should dispatch authLogin",async ()=>{
+    renderComponent();
+    const email = screen.getByLabelText("E-mail")
+    const password = screen.getByLabelText("Contraseña");
+    const submit = screen.getByRole("button", { name: /enviar/i });
+    
+    await userEvent.type(email,'jairo@mail.com')
+    await userEvent.type(password,'1234')
+    
+    await userEvent.click(submit)
+
+    expect(authLogin).toHaveBeenCalledWith({
+      email: "jairo@mail.com",
+      password: "1234",
+      remember: false,
+    });
+  })
 });

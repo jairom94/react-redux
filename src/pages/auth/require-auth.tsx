@@ -17,7 +17,9 @@ function RequireAuth({ children }: RequireAuthProps) {
   if (!isLogged) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
-
+  // if (location.pathname === "/login") {
+  //   return <Navigate to="/" replace />;
+  // }
   return children;
 }
 

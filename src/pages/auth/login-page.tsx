@@ -1,15 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 // import FormField from "../../components/ui/form-field";
 import type { Login } from "./types";
 // import ButtonCustom from "../../components/ui/button";
 import LoginLoader from "../../components/ui/login-loader";
 // import { useAuth } from "./context";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
 import { useNotification } from "../../components/ui/notification/context";
 import { createFormFactory } from "../../components/forms/FormFactory";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { getAuth } from "../../store/selectors";
-import { authLogin } from "../../store/actions";
+import { getAuth, getUi } from "../../store/selectors";
+import { authLogin, uiResetError } from "../../store/actions";
 import { getErrorMessage } from "../../api/client";
 
 
@@ -20,41 +20,32 @@ const LoginPage = () => {
     remember:false
   })
 
-  
-  
   const isLogged = useAppSelector(getAuth)
   const dispatch = useAppDispatch()
-  const [isLoading, setIsLoading] = useState(false);
 
-  const navigate = useNavigate();
-  // const location = useLocation();  
+  const { pending:isLoading,error } = useAppSelector(getUi)
 
   const { addNoti } = useNotification();  
 
-  useEffect(() => {
-    if (isLogged) {
-      navigate("/", { replace: true });
-    }
-  }, [isLogged,navigate]);  
-  const { Form, Input } = createFormFactory<Login>();  
-
-  async function handleLogin(values:Login){    
-    try {      
-      setIsLoading(true);      
-      await dispatch(authLogin(values))      
-      addNoti({
-        message: "Login success",
-        type: "success",        
-      });      
-    } catch (error) {
+  useEffect(()=>{
+    if(error){
       addNoti({
           message: getErrorMessage(error),
           type: "error",          
       });
-      credentials.current = {...values}
-    } finally {
-      setIsLoading(false);
-    }  
+      dispatch(uiResetError()) 
+      // credentials.current = {...values}
+    }
+  },[error])
+
+  const { Form, Input } = createFormFactory<Login>();  
+
+  async function handleLogin(values:Login){    
+    await dispatch(authLogin(values))      
+    addNoti({
+      message: "Login success",
+      type: "success",        
+    });           
   }
 
   if (isLoading) {
@@ -81,7 +72,8 @@ const LoginPage = () => {
             <Input name="remember" type="checkbox" id="remember" label="Recordar contraseña" />            
             <Input 
             name="enviar" 
-            type="submit" 
+            type="submit"
+            value="enviar" 
             className="bg-emerald-600 hover:bg-emerald-500 transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
             />
           </Form>

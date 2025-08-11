@@ -1,9 +1,12 @@
-import { render } from "@testing-library/react";
+import { render,screen } from "@testing-library/react";
 import SignPage from "./signup-page";
 import { Router } from "react-router";
 import { NotificationContext } from "../../components/ui/notification/context";
 import { Provider } from "react-redux";
+import userEvent from "@testing-library/user-event";
 
+import { authSignup } from "../../store/actions"
+vi.mock("../../store/actions")
 describe("SignupPage", () => {
   const state = {
     auth: false,
@@ -59,4 +62,21 @@ describe("SignupPage", () => {
     const { container } = renderComponent();
     expect(container).toMatchSnapshot();
   });
+
+  test("should dispatch authSignup",async ()=>{
+    renderComponent();
+    // const name = screen.getByLabelText("Nombres");
+    // const username = screen.getByLabelText("Nombre de usuario");
+    // const email = screen.getByLabelText("E-mail");
+    // const password = screen.getByLabelText("Contraseña");
+    const submit = screen.getByRole("button", { name: /enviar/i });
+
+    await userEvent.click(submit)
+    expect(authSignup).toHaveBeenCalledWith({
+      name: "",
+      username: "",
+      email: "",
+      password: "",
+    });
+  })
 });

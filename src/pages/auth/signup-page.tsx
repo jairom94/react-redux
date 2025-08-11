@@ -1,14 +1,11 @@
 import { useEffect, useRef } from "react";
-import { singUp } from "./service";
 import type { User } from "./types";
-import { Link, useNavigate } from "react-router";
-// import { useAuth } from "./context";
+import { Link } from "react-router";
 import { createFormFactory } from "../../components/forms/FormFactory";
 import { useNotification } from "../../components/ui/notification/context";
-// import { useUserInformation } from "./me/context";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { getAuth } from "../../store/selectors";
-import { authLogin, sessionLoaded } from "../../store/actions";
+import { getUi } from "../../store/selectors";
+import { authSignup, uiResetError } from "../../store/actions";
 import { getErrorMessage } from "../../api/client";
 
 const SignPage = () => {
@@ -17,103 +14,52 @@ const SignPage = () => {
     username: "",
     email: "",
     password: "",
-  })
-  const { Form, Input } = createFormFactory<User>()
-  const { addNoti } = useNotification();  
-  // const { onUserLogged } = useUserInformation();
+  });
+  const { Form, Input } = createFormFactory<User>();
+  const { addNoti } = useNotification();
+  const { error } = useAppSelector(getUi)
+  
+  const dispatch = useAppDispatch();  
 
-  // const { isLogged,onLogin } = useAuth()
-  const isLogged = useAppSelector(getAuth)
-  const dispatch = useAppDispatch()
-  const navigate = useNavigate();
   useEffect(()=>{
-    if (isLogged) {
-      navigate("/", { replace: true });
-    }
-  },[])  
-
-  async function handleSubmitForm(values:User) {
-    try {
-      await singUp(values);
-      const { email, password } = values
-      dispatch(authLogin({ email,password,remember:true }))
-      dispatch(sessionLoaded())
-      // await LogIn({ email,password,remember:true });      
-      // onLogin();
-      // onUserLogged();
-      navigate("/", { replace: true });
-      addNoti({
-        message: "Singup success, ¡Welcome!",
-        type: "success",        
-      });
-    } catch (error) {
+    if(error){
       addNoti({
           message: getErrorMessage(error),
           type: "error",          
-      });        
+      });
+      dispatch(uiResetError()) 
     }
+  },[error])
+
+  async function handleSubmitForm(values: User) {    
+    await dispatch(authSignup(values));
+    addNoti({
+      message: "Singup success, ¡Welcome!",
+      type: "success",
+    });
   }
   return (
-    <div className="bg-gray-800 min-h-dvh flex flex-col justify-center items-center">
-      <div className="bg-white px-5 py-8 rounded-lg md:container-md container flex flex-col justify-center gap-4">
-        
-        <h3 
-        className="text-2xl font-medium text-gray-800">Formulario de registro</h3>
-        <Form 
-        className="flex flex-col gap-2"
-        initialValue={credentialsUser.current} 
-        onSubmit={handleSubmitForm}>
-          <Input name="name" type="text" label="Nombres" />
-          <Input name="username" type="text" label="Nombre de usuario" />
-          <Input name="email" type="email" label="E-mail" />
-          <Input name="password" type="password" label="Contraseña" />
-          <Input name="enviar" type="submit" 
-          className="bg-emerald-600 hover:bg-emerald-500 transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-gray-800">
+      <div className="md:container-md container flex flex-col justify-center gap-4 rounded-lg bg-white px-5 py-8">
+        <h3 className="text-2xl font-medium text-gray-800">
+          Formulario de registro
+        </h3>
+        <Form
+          className="flex flex-col gap-2"
+          initialValue={credentialsUser.current}
+          onSubmit={handleSubmitForm}
+        >
+          <Input id="name" name="name" type="text" label="Nombres" />
+          <Input id="username" name="username" type="text" label="Nombre de usuario" />
+          <Input id="email" name="email" type="email" label="E-mail" />
+          <Input id="password" name="password" type="password" label="Contraseña" />
+          <Input
+            name="enviar"
+            type="submit"
+            value="enviar"
+            className="cursor-pointer bg-emerald-600 transition-colors duration-300 hover:bg-emerald-500 disabled:pointer-events-none disabled:opacity-50"
           />
         </Form>
-        {/* <form
-          onSubmit={handleSubmit}
-          className="flex flex-col justify-center gap-3"
-        >
-          <FormField
-            id="name"
-            label="Nombres"
-            name="name"
-            type="text"
-            value={name}
-            onChange={handleChange}
-          />
-          <FormField
-            id="username"
-            label="Nombre de usuario"
-            name="username"
-            type="text"
-            value={username}
-            onChange={handleChange}
-          />
-          <FormField
-            id="email"
-            label="E-mail"
-            name="email"
-            type="email"
-            value={email}
-            onChange={handleChange}
-          />
-          <FormField
-            id="password"
-            label="Contraseña"
-            name="password"
-            type="password"
-            value={password}
-            onChange={handleChange}
-          />
-          <ButtonCustom
-            disabled={isDisabled}
-            className="cursor-pointer rounded-lg bg-sky-700 py-3 font-bold tracking-wide text-white transition-colors duration-300 ease-linear hover:bg-sky-500 disabled:pointer-events-none disabled:opacity-50"
-          >
-            Registrar
-          </ButtonCustom>
-        </form> */}
         <div className="flex justify-center">
           <p className="font-light text-gray-700">
             ¿Ya tienes una cuenta?{" "}

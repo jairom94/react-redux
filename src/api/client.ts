@@ -25,7 +25,11 @@ client.interceptors.request.use((config) => {
 
 export const getErrorMessage = (error:unknown): string =>{
   if(axios.isAxiosError(error)){
-    return error.response?.data?.message ?? error.message
+    const message = error.response?.data?.message ?? error.message
+    if(Array.isArray(message)){      
+      return message.join(", ");
+    }
+    return message//error.response?.data?.message ?? error.message
   }
   if(error instanceof Error){
     return error.message ?? 'Error sin información';

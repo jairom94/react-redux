@@ -14,6 +14,8 @@ import Notfications from "./components/ui/notification/notifications";
 import { NotificationContext } from "./components/ui/notification/context";
 import useNotifications from "./components/ui/notification/useNotifications";
 import ErrorBoundary from "./components/error/error-boundary";
+import { AuthRedirect } from "./pages/auth/auth-redirect";
+// import RequireAuth from "./pages/auth/require-auth";
 // import LoginPage from "./pages/auth/login-page";
 //package json dev concurrently \"npm:dev:vite\" \"npm:lint:watch\" \"npm:format:watch\"
 
@@ -40,13 +42,19 @@ function App() {
           </Route>
           
         </Route>
-        <Route path="/signup" element={<SignPage />} />
+        <Route path="/signup" element={
+          <AuthRedirect>
+            <SignPage />
+          </AuthRedirect>
+        }/>
         <Route
           path="/login"
           element={
             <ErrorBoundary>
             <Suspense fallback={<LoginLoader />}>
+            <AuthRedirect>
               <LoginPage />
+            </AuthRedirect>              
             </Suspense>
             </ErrorBoundary>
           }

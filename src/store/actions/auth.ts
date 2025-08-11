@@ -1,6 +1,6 @@
 import type { AppThunk } from "..";
 // import { LogIn, logOut } from "../../pages/auth/service";
-import type { Login } from "../../pages/auth/types";
+import type { Login, User } from "../../pages/auth/types";
 import { sessionLoaded } from "./session";
 
 //LOGIN AUTH
@@ -22,6 +22,18 @@ type AuthLogoutFulFilled = {
 type AuthLogoutRejected = {
     type:'auth/logout/rejected';
     payload:Error;
+}
+
+//SIGNUP AUTH
+type AuthSignupPending = {
+    type:'auth/signup/pending';
+}
+type AuthSignupReject = {
+    type:'auth/signup/rejected';
+    payload:Error;
+}
+type AuthSignupFulFilled = {
+    type:'auth/signup/fulfilled';
 }
 
 //LOGIN AUTH
@@ -47,9 +59,21 @@ export const authLogoutRejected = (error:Error):AuthLogoutRejected => ({
     payload:error
 })
 
+//SIGNUP AUTH
+export const authSignupPending = ():AuthSignupPending => ({
+    type:"auth/signup/pending"
+})  
+export const authSignupRejected = (error:Error):AuthSignupReject => ({
+    type:"auth/signup/rejected",
+    payload:error
+})
+export const authSignupFulFilled = ():AuthSignupFulFilled => ({
+    type:"auth/signup/fulfilled"
+})
+
 //LOGIN ACTION
 export function authLogin(credentials:Login):AppThunk<Promise<void>> {
-    return async function (dispatch,_getState,{ api,router }) {
+    return async function (dispatch,_getState,{ api,router }) {        
         dispatch(authLoginPending())
         try {
 
@@ -84,10 +108,31 @@ export function authLogout():AppThunk<Promise<void>> {
     }
 }
 
+//SIGNUP ACTION
+export function authSignup(newUser:User):AppThunk<Promise<void>> {
+    return async function (dispatch,_getState,{ api }) {
+        dispatch(authSignupPending())
+        try {
+            await api.auth.singUp(newUser)
+            dispatch(authSignupFulFilled())
+            const { email, password } = newUser
+            dispatch(authLogin({ email,password,remember:true }))
+        } catch (error) {
+            if(error instanceof Error) {
+                dispatch(authSignupRejected(error))
+            }
+            throw error
+        }
+    }
+}
+
 export type AuthActions =
 | AuthLoginPending //Auth Login
 | AuthLoginReject
 | AuthLoginFulFilled
 | AuthLogoutRejected
 | AuthLogoutFulFilled //Auth logout 
+| AuthSignupPending //Auth Signup
+| AuthSignupReject
+| AuthSignupFulFilled //Auth Signup
 

@@ -3,10 +3,10 @@
 exports[`SignupPage > should render correctly 1`] = `
 <div>
   <div
-    class="bg-gray-800 min-h-dvh flex flex-col justify-center items-center"
+    class="flex min-h-dvh flex-col items-center justify-center bg-gray-800"
   >
     <div
-      class="bg-white px-5 py-8 rounded-lg md:container-md container flex flex-col justify-center gap-4"
+      class="md:container-md container flex flex-col justify-center gap-4 rounded-lg bg-white px-5 py-8"
     >
       <h3
         class="text-2xl font-medium text-gray-800"
@@ -19,11 +19,14 @@ exports[`SignupPage > should render correctly 1`] = `
         <div
           class="form-field flex flex-col gap-1"
         >
-          <label>
+          <label
+            for="name"
+          >
             Nombres
           </label>
           <input
             class="rounded-md border px-4 py-2 undefined"
+            id="name"
             name="name"
             type="text"
             value=""
@@ -32,11 +35,14 @@ exports[`SignupPage > should render correctly 1`] = `
         <div
           class="form-field flex flex-col gap-1"
         >
-          <label>
+          <label
+            for="username"
+          >
             Nombre de usuario
           </label>
           <input
             class="rounded-md border px-4 py-2 undefined"
+            id="username"
             name="username"
             type="text"
             value=""
@@ -45,11 +51,14 @@ exports[`SignupPage > should render correctly 1`] = `
         <div
           class="form-field flex flex-col gap-1"
         >
-          <label>
+          <label
+            for="email"
+          >
             E-mail
           </label>
           <input
             class="rounded-md border px-4 py-2 undefined"
+            id="email"
             name="email"
             type="email"
             value=""
@@ -58,11 +67,14 @@ exports[`SignupPage > should render correctly 1`] = `
         <div
           class="form-field flex flex-col gap-1"
         >
-          <label>
+          <label
+            for="password"
+          >
             Contraseña
           </label>
           <input
             class="rounded-md border px-4 py-2 undefined"
+            id="password"
             name="password"
             type="password"
             value=""
@@ -72,9 +84,10 @@ exports[`SignupPage > should render correctly 1`] = `
           class="form-field flex flex-col"
         >
           <input
-            class="rounded-md border px-4 py-2 bg-emerald-600 hover:bg-emerald-500 transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+            class="rounded-md border px-4 py-2 cursor-pointer bg-emerald-600 transition-colors duration-300 hover:bg-emerald-500 disabled:pointer-events-none disabled:opacity-50"
             name="enviar"
             type="submit"
+            value="enviar"
           />
         </div>
       </form>

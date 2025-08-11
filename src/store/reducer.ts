@@ -143,6 +143,20 @@ export function filters(state=defaultState.filters,action:Actions):State['filter
 
 export function ui(state = defaultState.ui, action: Actions): State["ui"] {
   switch (action.type) {
+    //LOGIN AUTH
+    case "auth/login/pending":
+      return { pending: true, error: null };
+    case "auth/login/rejected":
+      return { pending: false, error: action.payload };
+    case "auth/login/fulfilled":
+      return { pending: false, error: null };
+    //SIGNUP AUTH
+    case "auth/signup/pending":
+      return { pending: true, error: null };
+    case "auth/signup/rejected":
+      return { pending: false, error: action.payload };
+    case "auth/signup/fulfilled":
+      return { pending: false, error: null };
     //LOADED TAGS UI
     case "tags/loaded/pending":
       return { pending: true, error: null };
