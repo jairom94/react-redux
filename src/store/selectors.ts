@@ -8,6 +8,8 @@ export const getSessionUser = (state:RootState) => state.session
 
 export const getAdvertsRedux = (state:RootState) => state.adverts.data
 
+export const isLoadedAdverts = (state:RootState) => state.adverts.loaded
+
 export const filtersRedux = (state:RootState) => state.filters
 
 export const getAdvertRedux = (advertId?:string) => {
