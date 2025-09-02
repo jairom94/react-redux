@@ -2,7 +2,7 @@ import axios from "axios";
 import type { HttpHeaders } from "./type-axios-headers";
 
 export const client = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3001',
 });
 
 export const setAuthorizationHeader = (accessToken: string) => {
